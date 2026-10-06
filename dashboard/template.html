@@ -1,0 +1,183 @@
+<title>FuturePlatform 시그널</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: 관제 콘솔 — 상단 요약(사분면별 PF 보드 + 지수), 아래 필터와 신호 원장 */
+:root{
+  --bg:#f3f4f1; --surface:#ffffff; --ink:#1c2420; --muted:#5f6b65; --line:#d9ddd7;
+  --accent:#1f6f5c; --accent-soft:#e1efe9;
+  --pos:#2f7d4f; --neg:#b4472f; --new:#7a5a12; --review:#8a6d1d;
+  --chip:#eef0ec;
+  --f-body:"IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121614; --surface:#1a201d; --ink:#e4e9e5; --muted:#9aa69f; --line:#2c3531;
+  --accent:#5cc2a3; --accent-soft:#1d3029;
+  --pos:#6cc48f; --neg:#e58a72; --new:#d8b25a; --review:#d1b264;
+  --chip:#232b27; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#121614; --surface:#1a201d; --ink:#e4e9e5; --muted:#9aa69f; --line:#2c3531;
+  --accent:#5cc2a3; --accent-soft:#1d3029;
+  --pos:#6cc48f; --neg:#e58a72; --new:#d8b25a; --review:#d1b264;
+  --chip:#232b27; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:16px;padding-block:24px 48px;display:grid;gap:28px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+h1{font-size:1.6rem;font-weight:700;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.sub{color:var(--muted);margin:4px 0 0;font-size:.9rem}
+.stats{display:flex;gap:20px;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.stats div{display:grid}
+.stats b{font-size:1.3rem;font-weight:500}
+.stats span{font-size:.72rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+h2{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 10px;font-weight:500}
+.board{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.quad{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:12px;display:grid;gap:8px;align-content:start}
+.quad h3{margin:0;font-size:.85rem;font-weight:700;display:flex;justify-content:space-between;gap:8px}
+.quad h3 small{color:var(--muted);font-weight:400}
+.pfrow{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:10px;align-items:center;width:100%;background:none;border:0;padding:6px 4px;border-radius:4px;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.pfrow:hover,.pfrow:focus-visible{background:var(--accent-soft);outline:none}
+.pfrow[aria-pressed="true"]{background:var(--accent-soft);box-shadow:inset 3px 0 0 var(--accent)}
+.pfid{font-family:var(--f-mono);font-size:.8rem;color:var(--accent);font-weight:500}
+.pfname{font-size:.88rem;min-width:0}
+.pfname small{display:block;color:var(--muted);font-size:.75rem}
+.meter{display:flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:.78rem;font-variant-numeric:tabular-nums}
+.bar{display:flex;width:64px;height:8px;background:var(--chip);border-radius:2px;overflow:hidden}
+.bar i{display:block;height:100%}
+.idx{display:flex;flex-wrap:wrap;gap:8px}
+.chipbtn{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 12px;font:inherit;font-size:.85rem;cursor:pointer;display:flex;gap:6px;align-items:center}
+.chipbtn b{font-family:var(--f-mono);font-weight:500;color:var(--accent)}
+.chipbtn[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.chipbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.filters select,.filters label{font:inherit;font-size:.85rem}
+.filters select{background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:4px;padding:6px 8px}
+.filters .reset{margin-left:auto;background:none;border:0;color:var(--accent);font:inherit;font-size:.85rem;cursor:pointer;text-decoration:underline}
+.ledger{display:grid;gap:10px}
+.sig{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:14px 16px;display:grid;gap:8px;min-width:0}
+.sig .top{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.78rem;color:var(--muted);font-family:var(--f-mono)}
+.dir{font-family:var(--f-mono);font-weight:500;font-size:.75rem;padding:2px 8px;border-radius:3px;border:1px solid currentColor}
+.dir.p{color:var(--pos)} .dir.m{color:var(--neg)} .dir.n{color:var(--new)}
+.str{letter-spacing:2px;color:var(--accent)}
+.flag{color:var(--review);border:1px dashed currentColor;border-radius:3px;padding:1px 6px}
+.sig h4{margin:0;font-size:1rem;font-weight:700;line-height:1.4;text-wrap:balance}
+.sig p{margin:0;color:var(--ink);max-width:68ch;font-size:.92rem}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:.75rem;background:var(--chip);border-radius:3px;padding:2px 7px}
+.tag.pf{font-family:var(--f-mono);color:var(--accent)}
+.src{font-size:.8rem;color:var(--muted)}
+.src a{color:var(--accent)}
+.empty{color:var(--muted);padding:24px;text-align:center;border:1px dashed var(--line);border-radius:6px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:.75rem;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:8px;margin-right:4px;vertical-align:middle}
+@media (max-width:720px){.board{grid-template-columns:minmax(0,1fr)}.stats{gap:14px}}
+@media (prefers-reduced-motion:no-preference){.pfrow,.chipbtn{transition:background .15s}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <h1>FuturePlatform 시그널</h1>
+      <p class="sub" id="gen">Platform Thesis PF-01~09 · Korea Futures Lab 수요 지수</p>
+    </div>
+    <div class="stats" id="stats"></div>
+  </header>
+
+  <section>
+    <h2>Thesis 보드 · 2x2 사분면별</h2>
+    <div class="board" id="board"></div>
+    <div class="legend" style="margin-top:10px">
+      <span><i style="background:var(--pos)"></i>강화 강도 합</span>
+      <span><i style="background:var(--neg)"></i>약화 강도 합</span>
+      <span><i style="background:var(--new)"></i>신규 기회</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>수요층 지수</h2>
+    <div class="idx" id="idx"></div>
+  </section>
+
+  <section>
+    <h2>신호 원장</h2>
+    <div class="filters">
+      <select id="f-type" aria-label="근거 유형"><option value="">모든 근거 유형</option></select>
+      <select id="f-status" aria-label="상태">
+        <option value="">모든 상태</option><option value="accepted">채택</option><option value="review">검토 대기</option>
+      </select>
+      <label><input type="checkbox" id="f-japan"> 일본 선행 사례만</label>
+      <button class="reset" id="reset" type="button">필터 초기화</button>
+    </div>
+    <div class="ledger" id="ledger" style="margin-top:12px"></div>
+  </section>
+</div>
+
+<script>
+const DATA = /*__DATA__*/null;
+const QUADS = [
+  ["Strategic Core","최우선 스케일업"],["Moonshots","선행 R&D"],
+  ["Quick Wins","단기 마중물"],["Hedge & Defense","본업 방어"]
+];
+const state = {pf:"", idx:"", type:"", status:"", japan:false};
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function render(){
+  if(!DATA){ $("ledger").innerHTML = '<div class="empty">아직 수집된 신호가 없습니다. 첫 정기 수집 후 여기에 표시됩니다.</div>'; return; }
+  const S = DATA.signals;
+  $("gen").textContent = `Platform Thesis PF-01~09 · Korea Futures Lab 수요 지수 · ${DATA.generated} 갱신`;
+  const rev = S.filter(s=>s.status==="review").length;
+  const jp = S.filter(s=>s.japan).length;
+  $("stats").innerHTML = `<div><b>${S.length}</b><span>신호</span></div><div><b>${rev}</b><span>검토 대기</span></div><div><b>${jp}</b><span>일본 선행</span></div>`;
+
+  // PF aggregation
+  const agg = {};
+  Object.keys(DATA.thesis).forEach(k=>agg[k]={n:0,p:0,m:0,w:0});
+  S.forEach(s=>s.pf.forEach(k=>{ if(!agg[k]) return; const a=agg[k]; a.n++;
+    if(s.direction==="+") a.p+=s.strength; else if(s.direction==="-") a.m+=s.strength; else a.w+=s.strength; }));
+  const max = Math.max(1,...Object.values(agg).map(a=>a.p+a.m+a.w));
+  $("board").innerHTML = QUADS.map(([q,label])=>{
+    const rows = Object.values(DATA.thesis).filter(t=>t.quadrant===q).sort((a,b)=>b.score-a.score).map(t=>{
+      const a=agg[t.id], w=v=>Math.round(v/max*64);
+      return `<button class="pfrow" type="button" data-pf="${t.id}" aria-pressed="${state.pf===t.id}">
+        <span class="pfid">${t.id}</span>
+        <span class="pfname">${esc(t.name)}<small>${esc(t.control_point)} · ${t.score}점</small></span>
+        <span class="meter"><span class="bar"><i style="width:${w(a.p)}px;background:var(--pos)"></i><i style="width:${w(a.m)}px;background:var(--neg)"></i><i style="width:${w(a.w)}px;background:var(--new)"></i></span>${a.n}</span>
+      </button>`}).join("");
+    return `<div class="quad"><h3>${q}<small>${label}</small></h3>${rows}</div>`;
+  }).join("");
+  document.querySelectorAll(".pfrow").forEach(b=>b.onclick=()=>{state.pf = state.pf===b.dataset.pf?"":b.dataset.pf; render();});
+
+  // indices
+  $("idx").innerHTML = DATA.indices.map(n=>{
+    const c = S.filter(s=>s.index.includes(n)).length;
+    return `<button class="chipbtn" type="button" data-idx="${esc(n)}" aria-pressed="${state.idx===n}">${esc(n)} <b>${c}</b></button>`;
+  }).join("");
+  document.querySelectorAll(".chipbtn").forEach(b=>b.onclick=()=>{state.idx = state.idx===b.dataset.idx?"":b.dataset.idx; render();});
+
+  // type options once
+  const ft=$("f-type");
+  if(ft.options.length===1){ [...new Set(S.map(s=>s.type))].forEach(t=>ft.add(new Option(t,t))); }
+
+  const list = S.filter(s=>(!state.pf||s.pf.includes(state.pf))&&(!state.idx||s.index.includes(state.idx))
+    &&(!state.type||s.type===state.type)&&(!state.status||s.status===state.status)&&(!state.japan||s.japan));
+  $("ledger").innerHTML = list.length ? list.map(s=>{
+    const cls = s.direction==="+"?"p":s.direction==="-"?"m":"n";
+    const lab = s.direction==="+"?"강화":s.direction==="-"?"약화":"신규";
+    return `<article class="sig">
+      <div class="top"><span class="dir ${cls}">${lab}</span><span class="str" title="강도 ${s.strength}/3">${"●".repeat(s.strength)}${"○".repeat(3-s.strength)}</span>
+        <span>${esc(s.type)}</span><span>${esc(s.published)}</span>${s.japan?'<span>일본</span>':''}${s.status==="review"?'<span class="flag">검토 대기</span>':''}<span>${esc(s.id)}</span></div>
+      <h4>${esc(s.title)}</h4>
+      <p>${esc(s.summary)}</p>
+      <div class="tags">${s.pf.map(p=>`<span class="tag pf">${p}</span>`).join("")}${s.index.map(i=>`<span class="tag">${esc(i)}</span>`).join("")}</div>
+      <div class="src">${esc(s.source)} · <a href="${esc(s.url)}" target="_blank" rel="noopener">원문</a></div>
+    </article>`}).join("") : '<div class="empty">조건에 맞는 신호가 없습니다. 필터를 초기화해 보세요.</div>';
+}
+$("f-type").onchange=e=>{state.type=e.target.value;render();};
+$("f-status").onchange=e=>{state.status=e.target.value;render();};
+$("f-japan").onchange=e=>{state.japan=e.target.checked;render();};
+$("reset").onclick=()=>{Object.assign(state,{pf:"",idx:"",type:"",status:"",japan:false});$("f-type").value="";$("f-status").value="";$("f-japan").checked=false;render();};
+render();
+</script>

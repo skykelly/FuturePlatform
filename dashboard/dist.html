@@ -1,0 +1,183 @@
+<title>FuturePlatform 시그널</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: 관제 콘솔 — 상단 요약(사분면별 PF 보드 + 지수), 아래 필터와 신호 원장 */
+:root{
+  --bg:#f3f4f1; --surface:#ffffff; --ink:#1c2420; --muted:#5f6b65; --line:#d9ddd7;
+  --accent:#1f6f5c; --accent-soft:#e1efe9;
+  --pos:#2f7d4f; --neg:#b4472f; --new:#7a5a12; --review:#8a6d1d;
+  --chip:#eef0ec;
+  --f-body:"IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121614; --surface:#1a201d; --ink:#e4e9e5; --muted:#9aa69f; --line:#2c3531;
+  --accent:#5cc2a3; --accent-soft:#1d3029;
+  --pos:#6cc48f; --neg:#e58a72; --new:#d8b25a; --review:#d1b264;
+  --chip:#232b27; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#121614; --surface:#1a201d; --ink:#e4e9e5; --muted:#9aa69f; --line:#2c3531;
+  --accent:#5cc2a3; --accent-soft:#1d3029;
+  --pos:#6cc48f; --neg:#e58a72; --new:#d8b25a; --review:#d1b264;
+  --chip:#232b27; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:16px;padding-block:24px 48px;display:grid;gap:28px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+h1{font-size:1.6rem;font-weight:700;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.sub{color:var(--muted);margin:4px 0 0;font-size:.9rem}
+.stats{display:flex;gap:20px;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.stats div{display:grid}
+.stats b{font-size:1.3rem;font-weight:500}
+.stats span{font-size:.72rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+h2{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 10px;font-weight:500}
+.board{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.quad{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:12px;display:grid;gap:8px;align-content:start}
+.quad h3{margin:0;font-size:.85rem;font-weight:700;display:flex;justify-content:space-between;gap:8px}
+.quad h3 small{color:var(--muted);font-weight:400}
+.pfrow{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:10px;align-items:center;width:100%;background:none;border:0;padding:6px 4px;border-radius:4px;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.pfrow:hover,.pfrow:focus-visible{background:var(--accent-soft);outline:none}
+.pfrow[aria-pressed="true"]{background:var(--accent-soft);box-shadow:inset 3px 0 0 var(--accent)}
+.pfid{font-family:var(--f-mono);font-size:.8rem;color:var(--accent);font-weight:500}
+.pfname{font-size:.88rem;min-width:0}
+.pfname small{display:block;color:var(--muted);font-size:.75rem}
+.meter{display:flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:.78rem;font-variant-numeric:tabular-nums}
+.bar{display:flex;width:64px;height:8px;background:var(--chip);border-radius:2px;overflow:hidden}
+.bar i{display:block;height:100%}
+.idx{display:flex;flex-wrap:wrap;gap:8px}
+.chipbtn{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 12px;font:inherit;font-size:.85rem;cursor:pointer;display:flex;gap:6px;align-items:center}
+.chipbtn b{font-family:var(--f-mono);font-weight:500;color:var(--accent)}
+.chipbtn[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.chipbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.filters select,.filters label{font:inherit;font-size:.85rem}
+.filters select{background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:4px;padding:6px 8px}
+.filters .reset{margin-left:auto;background:none;border:0;color:var(--accent);font:inherit;font-size:.85rem;cursor:pointer;text-decoration:underline}
+.ledger{display:grid;gap:10px}
+.sig{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:14px 16px;display:grid;gap:8px;min-width:0}
+.sig .top{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.78rem;color:var(--muted);font-family:var(--f-mono)}
+.dir{font-family:var(--f-mono);font-weight:500;font-size:.75rem;padding:2px 8px;border-radius:3px;border:1px solid currentColor}
+.dir.p{color:var(--pos)} .dir.m{color:var(--neg)} .dir.n{color:var(--new)}
+.str{letter-spacing:2px;color:var(--accent)}
+.flag{color:var(--review);border:1px dashed currentColor;border-radius:3px;padding:1px 6px}
+.sig h4{margin:0;font-size:1rem;font-weight:700;line-height:1.4;text-wrap:balance}
+.sig p{margin:0;color:var(--ink);max-width:68ch;font-size:.92rem}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:.75rem;background:var(--chip);border-radius:3px;padding:2px 7px}
+.tag.pf{font-family:var(--f-mono);color:var(--accent)}
+.src{font-size:.8rem;color:var(--muted)}
+.src a{color:var(--accent)}
+.empty{color:var(--muted);padding:24px;text-align:center;border:1px dashed var(--line);border-radius:6px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:.75rem;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:8px;margin-right:4px;vertical-align:middle}
+@media (max-width:720px){.board{grid-template-columns:minmax(0,1fr)}.stats{gap:14px}}
+@media (prefers-reduced-motion:no-preference){.pfrow,.chipbtn{transition:background .15s}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <h1>FuturePlatform 시그널</h1>
+      <p class="sub" id="gen">Platform Thesis PF-01~09 · Korea Futures Lab 수요 지수</p>
+    </div>
+    <div class="stats" id="stats"></div>
+  </header>
+
+  <section>
+    <h2>Thesis 보드 · 2x2 사분면별</h2>
+    <div class="board" id="board"></div>
+    <div class="legend" style="margin-top:10px">
+      <span><i style="background:var(--pos)"></i>강화 강도 합</span>
+      <span><i style="background:var(--neg)"></i>약화 강도 합</span>
+      <span><i style="background:var(--new)"></i>신규 기회</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>수요층 지수</h2>
+    <div class="idx" id="idx"></div>
+  </section>
+
+  <section>
+    <h2>신호 원장</h2>
+    <div class="filters">
+      <select id="f-type" aria-label="근거 유형"><option value="">모든 근거 유형</option></select>
+      <select id="f-status" aria-label="상태">
+        <option value="">모든 상태</option><option value="accepted">채택</option><option value="review">검토 대기</option>
+      </select>
+      <label><input type="checkbox" id="f-japan"> 일본 선행 사례만</label>
+      <button class="reset" id="reset" type="button">필터 초기화</button>
+    </div>
+    <div class="ledger" id="ledger" style="margin-top:12px"></div>
+  </section>
+</div>
+
+<script>
+const DATA = {"generated": "2026-10-06", "thesis": {"PF-01": {"id": "PF-01", "name": "Household CFO", "control_point": "Household Purchasing Mandate", "stack": "Household", "quadrant": "Moonshots", "score": 35.0, "weight": "medium"}, "PF-02": {"id": "PF-02", "name": "Physical Environment Runtime", "control_point": "Physical Action Model", "stack": "Physical AI", "quadrant": "Moonshots", "score": 34.5, "weight": "medium"}, "PF-03": {"id": "PF-03", "name": "Autonomous Space OS", "control_point": "Space State + Uptime", "stack": "Physical AI", "quadrant": "Moonshots", "score": 34.0, "weight": "medium"}, "PF-04": {"id": "PF-04", "name": "Ambient AI Distribution", "control_point": "AI Service Routing", "stack": "Distribution·Infrastructure", "quadrant": "Strategic Core", "score": 36.0, "weight": "high"}, "PF-05": {"id": "PF-05", "name": "Flexible Energy Network", "control_point": "Verified Flexible Load", "stack": "Distribution·Infrastructure", "quadrant": "Strategic Core", "score": 33.5, "weight": "high"}, "PF-06": {"id": "PF-06", "name": "Robot Operations", "control_point": "Work Outcome SLA", "stack": "Physical AI", "quadrant": "Strategic Core", "score": 35.0, "weight": "high"}, "PF-07": {"id": "PF-07", "name": "Home Diagnostics", "control_point": "Home State·Diagnosis", "stack": "Household", "quadrant": "Quick Wins", "score": 32.0, "weight": "high"}, "PF-08": {"id": "PF-08", "name": "Independent Living", "control_point": "Independent-living State", "stack": "Household", "quadrant": "Hedge & Defense", "score": 25.0, "weight": "medium"}, "PF-09": {"id": "PF-09", "name": "Second Life Exchange", "control_point": "Condition Certification", "stack": "Household", "quadrant": "Hedge & Defense", "score": 28.0, "weight": "low"}}, "indices": ["가사외주화지수", "공간제약지수", "돌봄부담지수", "시간빈곤지수"], "signals": [{"id": "SIG-20261006-10", "title": "일본 에디온, 가전 사용 이력으로 고령자 원격 안부 확인 — 복수 제조사 대응", "collected": "2026-10-06", "published": "2026-03", "source": "니혼게이자이신문", "url": "https://www.nikkei.com/article/DGXZQOUF197660Z10C26A3000000/", "type": "사례", "direction": "+", "strength": 2, "pf": ["PF-08", "PF-07"], "index": ["돌봄부담지수"], "japan": true, "status": "review", "summary": "일본 가전 양판점 에디온이 가전 사용 이력을 바탕으로 떨어져 사는 고령자의 안부를 원격으로 확인하는 서비스를 내놓았고, 샤프 등 여러 제조사 제품에 대응한다고 보도됐다. (원문 접근 제한으로 기사 제목 기준 기록 — 상세 확인 필요)", "path": "signals/2026-10/SIG-20261006-10.md"}, {"id": "SIG-20261006-09", "title": "외국인 가사관리사 본사업 미추진 결정", "collected": "2026-10-06", "published": "2025-12-22", "source": "경향신문", "url": "https://www.khan.co.kr/article/202512221801001", "type": "제도", "direction": "+", "strength": 2, "pf": ["PF-06", "PF-02"], "index": ["가사외주화지수"], "japan": false, "status": "accepted", "summary": "정부가 외국인 가사관리사 시범사업을 본사업으로 전환하지 않기로 했다. 기존 인력은 체류 기간 연장 등으로 보호하되 제도 확대는 멈췄고, 고용허가제 전체 외국인력 쿼터도 2026년에 크게 줄었다.", "path": "signals/2026-10/SIG-20261006-09.md"}, {"id": "SIG-20261006-08", "title": "EU 디지털 제품 여권 — 전자제품 수리성(2027)·재활용성(2029) 요건 예정", "collected": "2026-10-06", "published": "2026-07-30", "source": "DPP Tool 가이드", "url": "https://dpp-tool.com/en/guide/digital-product-passport-eu-sectors-timeline-2026/", "type": "제도", "direction": "+", "strength": 1, "pf": ["PF-09", "PF-07"], "index": [], "japan": false, "status": "review", "summary": "EU 디지털 제품 여권(DPP)은 배터리에 먼저 의무화되고, 전자제품은 단독 위임법이 아닌 수평 요건으로 수리 가능성(2027년 예상)과 재활용성(2029년 예상)이 순차 적용될 전망이다. 여권에는 소재 구성, 탄소발자국, 수리·분해 정보, 폐기 처리 정보 등이 담긴다.", "path": "signals/2026-10/SIG-20261006-08.md"}, {"id": "SIG-20261006-07", "title": "webOS 26 구형 TV 확대 배포, AI 챗봇·컨시어지 탑재", "collected": "2026-10-06", "published": "2026-08-25", "source": "LG전자 뉴스룸", "url": "https://www.lg.com/us/newsroom/media-entertainment/lg-electronics-introduces-an-award-winning-ai-tv-experience-at-ifa-2026", "type": "발표", "direction": "+", "strength": 1, "pf": ["PF-04"], "index": [], "japan": false, "status": "accepted", "summary": "LG전자가 IFA 2026에서 webOS 26 기반 AI TV 경험(음성 ID, AI 챗봇, AI 컨시어지)과 보안 체계를 소개했다. 같은 시기 webOS 26 업데이트가 이전 연식 TV로도 배포되기 시작했다고 해외 매체들이 보도했다.", "path": "signals/2026-10/SIG-20261006-07.md"}, {"id": "SIG-20261006-06", "title": "1X NEO 가정용 휴머노이드, 구매 또는 월 구독 + 원격 조작 지원", "collected": "2026-10-06", "published": "2025-11-03", "source": "AI타임스", "url": "https://www.aitimes.com/news/articleView.html?idxno=203684", "type": "사례", "direction": "+", "strength": 2, "pf": ["PF-06", "PF-02"], "index": ["가사외주화지수"], "japan": false, "status": "accepted", "summary": "1X가 가정용 휴머노이드 NEO를 2만 달러 구매 또는 월 499달러 구독(6개월 이상)으로 사전 판매하며 2026년 배송을 예고했다. 완전 자율이 아니어서 회사 원격 조작자가 작업을 도울 수 있다는 점을 사용자가 수용해야 하며, 사생활 우려가 제기됐다. 식기세척기 조작, 조리대 닦기, 옷 개기 등 일상 가사를 시연했다.", "path": "signals/2026-10/SIG-20261006-06.md"}, {"id": "SIG-20261006-05", "title": "LG전자, 북미 5GW 규모 AI 데이터센터 냉각 장기공급 계약", "collected": "2026-10-06", "published": "2026-10-05", "source": "머니투데이", "url": "https://www.mt.co.kr/industry/2026/10/05/2026100516112469972", "type": "발표", "direction": "+", "strength": 2, "pf": ["PF-03"], "index": [], "japan": false, "status": "accepted", "summary": "LG전자가 미국 인프라 기업과 5GW 규모 AI 데이터센터에 칠러와 냉각수분배장치(CDU)를 장기 공급하는 계약을 맺었다. 상반기 데이터센터 냉각 수주가 이미 큰 폭으로 늘었고, 미국 버지니아에 칠러 공장도 지을 계획이라고 보도됐다.", "path": "signals/2026-10/SIG-20261006-05.md"}, {"id": "SIG-20261006-04", "title": "KB국민카드, AI 에이전트 결제 실증 착수", "collected": "2026-10-06", "published": "2026-09-29", "source": "아시아경제", "url": "https://view.asiae.co.kr/article/2026092914134006340", "type": "발표", "direction": "+", "strength": 2, "pf": ["PF-01"], "index": ["시간빈곤지수"], "japan": false, "status": "accepted", "summary": "KB국민카드가 에스와이폴라리스와 손잡고 AI 에이전트가 사용자를 대신해 쇼핑몰에서 결제하는 흐름을 실증한다. 에이전트·쇼핑몰·결제모듈·카드사 시스템 사이의 인증과 거래 검증 요건을 확인하는 것이 목표이며, 비자의 에이전틱 커머스 프로그램에도 참여한다. 9월 들어 신한·하나카드 등 다른 카드사도 에이전트 결제 개발에 나섰다는 보도가 이어졌다.", "path": "signals/2026-10/SIG-20261006-04.md"}, {"id": "SIG-20261006-03", "title": "포스코이앤씨, 아파트 Auto DR 2만→10만 세대 확대 추진", "collected": "2026-10-06", "published": "2026-09-10", "source": "업코리아", "url": "https://www.upkoreanews.kr/news/articleView.html?idxno=100181", "type": "사례", "direction": "+", "strength": 2, "pf": ["PF-05"], "index": [], "japan": false, "status": "accepted", "summary": "포스코이앤씨가 스마트홈 플랫폼과 연동된 가전을 전력 피크 시간에 자동 제어해 사용량을 줄이는 Auto DR을 약 2만 세대에서 10만 세대로 늘리겠다고 밝혔다. 전력거래소 감축 요청에 따라 자동으로 작동하고, 실제 감축량만큼 세대에 보상하는 구조다. 경동나비엔, 포스코DX, 전력거래소 등이 참여한다.", "path": "signals/2026-10/SIG-20261006-03.md"}, {"id": "SIG-20261006-02", "title": "1인가구 804만·36.1%, 70세 이상이 최대 비중", "collected": "2026-10-06", "published": "2025-12-09", "source": "국가데이터처 「2025 통계로 보는 1인가구」(경향신문 보도)", "url": "https://www.khan.co.kr/article/202512091341001", "type": "통계", "direction": "+", "strength": 3, "pf": ["PF-08", "PF-01", "PF-09"], "index": ["돌봄부담지수", "공간제약지수"], "japan": false, "status": "accepted", "summary": "1인가구가 처음으로 800만을 넘어 전체 가구의 36% 수준에 이르렀다. 연령대별로는 70세 이상이 가장 큰 비중이며, 60세 이상을 합치면 1인가구의 3분의 1을 넘는다. 1인가구의 소득·자산은 전체 가구 평균의 절반에 못 미치고, 절반 가까이가 외로움을 느낀다고 답했다.", "path": "signals/2026-10/SIG-20261006-02.md"}, {"id": "SIG-20261006-01", "title": "지역사회 통합돌봄 전국 229개 시군구 시행", "collected": "2026-10-06", "published": "2026-03-26", "source": "대한민국 정책브리핑(보건복지부)", "url": "https://www.korea.kr/news/policyNewsView.do?newsId=148961536", "type": "제도", "direction": "+", "strength": 3, "pf": ["PF-08", "PF-07"], "index": ["돌봄부담지수"], "japan": false, "status": "accepted", "summary": "2026년 3월 27일부터 노쇠·질병으로 일상생활이 어려운 65세 이상 노인과 중증 장애인을 대상으로 통합돌봄이 전국 229개 시군구에서 시행됐다. 의료·요양·일상생활 지원을 집에서 받도록 하는 구조이며, 지역 특화 서비스에 이동 지원과 주거환경 개선이 포함된다. 시범사업 참여자는 요양병원·시설 입소율이 비참여자보다 낮았다고 정부가 밝혔다.", "path": "signals/2026-10/SIG-20261006-01.md"}]};
+const QUADS = [
+  ["Strategic Core","최우선 스케일업"],["Moonshots","선행 R&D"],
+  ["Quick Wins","단기 마중물"],["Hedge & Defense","본업 방어"]
+];
+const state = {pf:"", idx:"", type:"", status:"", japan:false};
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function render(){
+  if(!DATA){ $("ledger").innerHTML = '<div class="empty">아직 수집된 신호가 없습니다. 첫 정기 수집 후 여기에 표시됩니다.</div>'; return; }
+  const S = DATA.signals;
+  $("gen").textContent = `Platform Thesis PF-01~09 · Korea Futures Lab 수요 지수 · ${DATA.generated} 갱신`;
+  const rev = S.filter(s=>s.status==="review").length;
+  const jp = S.filter(s=>s.japan).length;
+  $("stats").innerHTML = `<div><b>${S.length}</b><span>신호</span></div><div><b>${rev}</b><span>검토 대기</span></div><div><b>${jp}</b><span>일본 선행</span></div>`;
+
+  // PF aggregation
+  const agg = {};
+  Object.keys(DATA.thesis).forEach(k=>agg[k]={n:0,p:0,m:0,w:0});
+  S.forEach(s=>s.pf.forEach(k=>{ if(!agg[k]) return; const a=agg[k]; a.n++;
+    if(s.direction==="+") a.p+=s.strength; else if(s.direction==="-") a.m+=s.strength; else a.w+=s.strength; }));
+  const max = Math.max(1,...Object.values(agg).map(a=>a.p+a.m+a.w));
+  $("board").innerHTML = QUADS.map(([q,label])=>{
+    const rows = Object.values(DATA.thesis).filter(t=>t.quadrant===q).sort((a,b)=>b.score-a.score).map(t=>{
+      const a=agg[t.id], w=v=>Math.round(v/max*64);
+      return `<button class="pfrow" type="button" data-pf="${t.id}" aria-pressed="${state.pf===t.id}">
+        <span class="pfid">${t.id}</span>
+        <span class="pfname">${esc(t.name)}<small>${esc(t.control_point)} · ${t.score}점</small></span>
+        <span class="meter"><span class="bar"><i style="width:${w(a.p)}px;background:var(--pos)"></i><i style="width:${w(a.m)}px;background:var(--neg)"></i><i style="width:${w(a.w)}px;background:var(--new)"></i></span>${a.n}</span>
+      </button>`}).join("");
+    return `<div class="quad"><h3>${q}<small>${label}</small></h3>${rows}</div>`;
+  }).join("");
+  document.querySelectorAll(".pfrow").forEach(b=>b.onclick=()=>{state.pf = state.pf===b.dataset.pf?"":b.dataset.pf; render();});
+
+  // indices
+  $("idx").innerHTML = DATA.indices.map(n=>{
+    const c = S.filter(s=>s.index.includes(n)).length;
+    return `<button class="chipbtn" type="button" data-idx="${esc(n)}" aria-pressed="${state.idx===n}">${esc(n)} <b>${c}</b></button>`;
+  }).join("");
+  document.querySelectorAll(".chipbtn").forEach(b=>b.onclick=()=>{state.idx = state.idx===b.dataset.idx?"":b.dataset.idx; render();});
+
+  // type options once
+  const ft=$("f-type");
+  if(ft.options.length===1){ [...new Set(S.map(s=>s.type))].forEach(t=>ft.add(new Option(t,t))); }
+
+  const list = S.filter(s=>(!state.pf||s.pf.includes(state.pf))&&(!state.idx||s.index.includes(state.idx))
+    &&(!state.type||s.type===state.type)&&(!state.status||s.status===state.status)&&(!state.japan||s.japan));
+  $("ledger").innerHTML = list.length ? list.map(s=>{
+    const cls = s.direction==="+"?"p":s.direction==="-"?"m":"n";
+    const lab = s.direction==="+"?"강화":s.direction==="-"?"약화":"신규";
+    return `<article class="sig">
+      <div class="top"><span class="dir ${cls}">${lab}</span><span class="str" title="강도 ${s.strength}/3">${"●".repeat(s.strength)}${"○".repeat(3-s.strength)}</span>
+        <span>${esc(s.type)}</span><span>${esc(s.published)}</span>${s.japan?'<span>일본</span>':''}${s.status==="review"?'<span class="flag">검토 대기</span>':''}<span>${esc(s.id)}</span></div>
+      <h4>${esc(s.title)}</h4>
+      <p>${esc(s.summary)}</p>
+      <div class="tags">${s.pf.map(p=>`<span class="tag pf">${p}</span>`).join("")}${s.index.map(i=>`<span class="tag">${esc(i)}</span>`).join("")}</div>
+      <div class="src">${esc(s.source)} · <a href="${esc(s.url)}" target="_blank" rel="noopener">원문</a></div>
+    </article>`}).join("") : '<div class="empty">조건에 맞는 신호가 없습니다. 필터를 초기화해 보세요.</div>';
+}
+$("f-type").onchange=e=>{state.type=e.target.value;render();};
+$("f-status").onchange=e=>{state.status=e.target.value;render();};
+$("f-japan").onchange=e=>{state.japan=e.target.checked;render();};
+$("reset").onclick=()=>{Object.assign(state,{pf:"",idx:"",type:"",status:"",japan:false});$("f-type").value="";$("f-status").value="";$("f-japan").checked=false;render();};
+render();
+</script>

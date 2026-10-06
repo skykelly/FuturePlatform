@@ -1,0 +1,304 @@
+{
+  "generated": "2026-10-06",
+  "thesis": {
+    "PF-01": {
+      "id": "PF-01",
+      "name": "Household CFO",
+      "control_point": "Household Purchasing Mandate",
+      "stack": "Household",
+      "quadrant": "Moonshots",
+      "score": 35.0,
+      "weight": "medium"
+    },
+    "PF-02": {
+      "id": "PF-02",
+      "name": "Physical Environment Runtime",
+      "control_point": "Physical Action Model",
+      "stack": "Physical AI",
+      "quadrant": "Moonshots",
+      "score": 34.5,
+      "weight": "medium"
+    },
+    "PF-03": {
+      "id": "PF-03",
+      "name": "Autonomous Space OS",
+      "control_point": "Space State + Uptime",
+      "stack": "Physical AI",
+      "quadrant": "Moonshots",
+      "score": 34.0,
+      "weight": "medium"
+    },
+    "PF-04": {
+      "id": "PF-04",
+      "name": "Ambient AI Distribution",
+      "control_point": "AI Service Routing",
+      "stack": "Distribution·Infrastructure",
+      "quadrant": "Strategic Core",
+      "score": 36.0,
+      "weight": "high"
+    },
+    "PF-05": {
+      "id": "PF-05",
+      "name": "Flexible Energy Network",
+      "control_point": "Verified Flexible Load",
+      "stack": "Distribution·Infrastructure",
+      "quadrant": "Strategic Core",
+      "score": 33.5,
+      "weight": "high"
+    },
+    "PF-06": {
+      "id": "PF-06",
+      "name": "Robot Operations",
+      "control_point": "Work Outcome SLA",
+      "stack": "Physical AI",
+      "quadrant": "Strategic Core",
+      "score": 35.0,
+      "weight": "high"
+    },
+    "PF-07": {
+      "id": "PF-07",
+      "name": "Home Diagnostics",
+      "control_point": "Home State·Diagnosis",
+      "stack": "Household",
+      "quadrant": "Quick Wins",
+      "score": 32.0,
+      "weight": "high"
+    },
+    "PF-08": {
+      "id": "PF-08",
+      "name": "Independent Living",
+      "control_point": "Independent-living State",
+      "stack": "Household",
+      "quadrant": "Hedge & Defense",
+      "score": 25.0,
+      "weight": "medium"
+    },
+    "PF-09": {
+      "id": "PF-09",
+      "name": "Second Life Exchange",
+      "control_point": "Condition Certification",
+      "stack": "Household",
+      "quadrant": "Hedge & Defense",
+      "score": 28.0,
+      "weight": "low"
+    }
+  },
+  "indices": [
+    "가사외주화지수",
+    "공간제약지수",
+    "돌봄부담지수",
+    "시간빈곤지수"
+  ],
+  "signals": [
+    {
+      "id": "SIG-20261006-10",
+      "title": "일본 에디온, 가전 사용 이력으로 고령자 원격 안부 확인 — 복수 제조사 대응",
+      "collected": "2026-10-06",
+      "published": "2026-03",
+      "source": "니혼게이자이신문",
+      "url": "https://www.nikkei.com/article/DGXZQOUF197660Z10C26A3000000/",
+      "type": "사례",
+      "direction": "+",
+      "strength": 2,
+      "pf": [
+        "PF-08",
+        "PF-07"
+      ],
+      "index": [
+        "돌봄부담지수"
+      ],
+      "japan": true,
+      "status": "review",
+      "summary": "일본 가전 양판점 에디온이 가전 사용 이력을 바탕으로 떨어져 사는 고령자의 안부를 원격으로 확인하는 서비스를 내놓았고, 샤프 등 여러 제조사 제품에 대응한다고 보도됐다. (원문 접근 제한으로 기사 제목 기준 기록 — 상세 확인 필요)",
+      "path": "signals/2026-10/SIG-20261006-10.md"
+    },
+    {
+      "id": "SIG-20261006-09",
+      "title": "외국인 가사관리사 본사업 미추진 결정",
+      "collected": "2026-10-06",
+      "published": "2025-12-22",
+      "source": "경향신문",
+      "url": "https://www.khan.co.kr/article/202512221801001",
+      "type": "제도",
+      "direction": "+",
+      "strength": 2,
+      "pf": [
+        "PF-06",
+        "PF-02"
+      ],
+      "index": [
+        "가사외주화지수"
+      ],
+      "japan": false,
+      "status": "accepted",
+      "summary": "정부가 외국인 가사관리사 시범사업을 본사업으로 전환하지 않기로 했다. 기존 인력은 체류 기간 연장 등으로 보호하되 제도 확대는 멈췄고, 고용허가제 전체 외국인력 쿼터도 2026년에 크게 줄었다.",
+      "path": "signals/2026-10/SIG-20261006-09.md"
+    },
+    {
+      "id": "SIG-20261006-08",
+      "title": "EU 디지털 제품 여권 — 전자제품 수리성(2027)·재활용성(2029) 요건 예정",
+      "collected": "2026-10-06",
+      "published": "2026-07-30",
+      "source": "DPP Tool 가이드",
+      "url": "https://dpp-tool.com/en/guide/digital-product-passport-eu-sectors-timeline-2026/",
+      "type": "제도",
+      "direction": "+",
+      "strength": 1,
+      "pf": [
+        "PF-09",
+        "PF-07"
+      ],
+      "index": [],
+      "japan": false,
+      "status": "review",
+      "summary": "EU 디지털 제품 여권(DPP)은 배터리에 먼저 의무화되고, 전자제품은 단독 위임법이 아닌 수평 요건으로 수리 가능성(2027년 예상)과 재활용성(2029년 예상)이 순차 적용될 전망이다. 여권에는 소재 구성, 탄소발자국, 수리·분해 정보, 폐기 처리 정보 등이 담긴다.",
+      "path": "signals/2026-10/SIG-20261006-08.md"
+    },
+    {
+      "id": "SIG-20261006-07",
+      "title": "webOS 26 구형 TV 확대 배포, AI 챗봇·컨시어지 탑재",
+      "collected": "2026-10-06",
+      "published": "2026-08-25",
+      "source": "LG전자 뉴스룸",
+      "url": "https://www.lg.com/us/newsroom/media-entertainment/lg-electronics-introduces-an-award-winning-ai-tv-experience-at-ifa-2026",
+      "type": "발표",
+      "direction": "+",
+      "strength": 1,
+      "pf": [
+        "PF-04"
+      ],
+      "index": [],
+      "japan": false,
+      "status": "accepted",
+      "summary": "LG전자가 IFA 2026에서 webOS 26 기반 AI TV 경험(음성 ID, AI 챗봇, AI 컨시어지)과 보안 체계를 소개했다. 같은 시기 webOS 26 업데이트가 이전 연식 TV로도 배포되기 시작했다고 해외 매체들이 보도했다.",
+      "path": "signals/2026-10/SIG-20261006-07.md"
+    },
+    {
+      "id": "SIG-20261006-06",
+      "title": "1X NEO 가정용 휴머노이드, 구매 또는 월 구독 + 원격 조작 지원",
+      "collected": "2026-10-06",
+      "published": "2025-11-03",
+      "source": "AI타임스",
+      "url": "https://www.aitimes.com/news/articleView.html?idxno=203684",
+      "type": "사례",
+      "direction": "+",
+      "strength": 2,
+      "pf": [
+        "PF-06",
+        "PF-02"
+      ],
+      "index": [
+        "가사외주화지수"
+      ],
+      "japan": false,
+      "status": "accepted",
+      "summary": "1X가 가정용 휴머노이드 NEO를 2만 달러 구매 또는 월 499달러 구독(6개월 이상)으로 사전 판매하며 2026년 배송을 예고했다. 완전 자율이 아니어서 회사 원격 조작자가 작업을 도울 수 있다는 점을 사용자가 수용해야 하며, 사생활 우려가 제기됐다. 식기세척기 조작, 조리대 닦기, 옷 개기 등 일상 가사를 시연했다.",
+      "path": "signals/2026-10/SIG-20261006-06.md"
+    },
+    {
+      "id": "SIG-20261006-05",
+      "title": "LG전자, 북미 5GW 규모 AI 데이터센터 냉각 장기공급 계약",
+      "collected": "2026-10-06",
+      "published": "2026-10-05",
+      "source": "머니투데이",
+      "url": "https://www.mt.co.kr/industry/2026/10/05/2026100516112469972",
+      "type": "발표",
+      "direction": "+",
+      "strength": 2,
+      "pf": [
+        "PF-03"
+      ],
+      "index": [],
+      "japan": false,
+      "status": "accepted",
+      "summary": "LG전자가 미국 인프라 기업과 5GW 규모 AI 데이터센터에 칠러와 냉각수분배장치(CDU)를 장기 공급하는 계약을 맺었다. 상반기 데이터센터 냉각 수주가 이미 큰 폭으로 늘었고, 미국 버지니아에 칠러 공장도 지을 계획이라고 보도됐다.",
+      "path": "signals/2026-10/SIG-20261006-05.md"
+    },
+    {
+      "id": "SIG-20261006-04",
+      "title": "KB국민카드, AI 에이전트 결제 실증 착수",
+      "collected": "2026-10-06",
+      "published": "2026-09-29",
+      "source": "아시아경제",
+      "url": "https://view.asiae.co.kr/article/2026092914134006340",
+      "type": "발표",
+      "direction": "+",
+      "strength": 2,
+      "pf": [
+        "PF-01"
+      ],
+      "index": [
+        "시간빈곤지수"
+      ],
+      "japan": false,
+      "status": "accepted",
+      "summary": "KB국민카드가 에스와이폴라리스와 손잡고 AI 에이전트가 사용자를 대신해 쇼핑몰에서 결제하는 흐름을 실증한다. 에이전트·쇼핑몰·결제모듈·카드사 시스템 사이의 인증과 거래 검증 요건을 확인하는 것이 목표이며, 비자의 에이전틱 커머스 프로그램에도 참여한다. 9월 들어 신한·하나카드 등 다른 카드사도 에이전트 결제 개발에 나섰다는 보도가 이어졌다.",
+      "path": "signals/2026-10/SIG-20261006-04.md"
+    },
+    {
+      "id": "SIG-20261006-03",
+      "title": "포스코이앤씨, 아파트 Auto DR 2만→10만 세대 확대 추진",
+      "collected": "2026-10-06",
+      "published": "2026-09-10",
+      "source": "업코리아",
+      "url": "https://www.upkoreanews.kr/news/articleView.html?idxno=100181",
+      "type": "사례",
+      "direction": "+",
+      "strength": 2,
+      "pf": [
+        "PF-05"
+      ],
+      "index": [],
+      "japan": false,
+      "status": "accepted",
+      "summary": "포스코이앤씨가 스마트홈 플랫폼과 연동된 가전을 전력 피크 시간에 자동 제어해 사용량을 줄이는 Auto DR을 약 2만 세대에서 10만 세대로 늘리겠다고 밝혔다. 전력거래소 감축 요청에 따라 자동으로 작동하고, 실제 감축량만큼 세대에 보상하는 구조다. 경동나비엔, 포스코DX, 전력거래소 등이 참여한다.",
+      "path": "signals/2026-10/SIG-20261006-03.md"
+    },
+    {
+      "id": "SIG-20261006-02",
+      "title": "1인가구 804만·36.1%, 70세 이상이 최대 비중",
+      "collected": "2026-10-06",
+      "published": "2025-12-09",
+      "source": "국가데이터처 「2025 통계로 보는 1인가구」(경향신문 보도)",
+      "url": "https://www.khan.co.kr/article/202512091341001",
+      "type": "통계",
+      "direction": "+",
+      "strength": 3,
+      "pf": [
+        "PF-08",
+        "PF-01",
+        "PF-09"
+      ],
+      "index": [
+        "돌봄부담지수",
+        "공간제약지수"
+      ],
+      "japan": false,
+      "status": "accepted",
+      "summary": "1인가구가 처음으로 800만을 넘어 전체 가구의 36% 수준에 이르렀다. 연령대별로는 70세 이상이 가장 큰 비중이며, 60세 이상을 합치면 1인가구의 3분의 1을 넘는다. 1인가구의 소득·자산은 전체 가구 평균의 절반에 못 미치고, 절반 가까이가 외로움을 느낀다고 답했다.",
+      "path": "signals/2026-10/SIG-20261006-02.md"
+    },
+    {
+      "id": "SIG-20261006-01",
+      "title": "지역사회 통합돌봄 전국 229개 시군구 시행",
+      "collected": "2026-10-06",
+      "published": "2026-03-26",
+      "source": "대한민국 정책브리핑(보건복지부)",
+      "url": "https://www.korea.kr/news/policyNewsView.do?newsId=148961536",
+      "type": "제도",
+      "direction": "+",
+      "strength": 3,
+      "pf": [
+        "PF-08",
+        "PF-07"
+      ],
+      "index": [
+        "돌봄부담지수"
+      ],
+      "japan": false,
+      "status": "accepted",
+      "summary": "2026년 3월 27일부터 노쇠·질병으로 일상생활이 어려운 65세 이상 노인과 중증 장애인을 대상으로 통합돌봄이 전국 229개 시군구에서 시행됐다. 의료·요양·일상생활 지원을 집에서 받도록 하는 구조이며, 지역 특화 서비스에 이동 지원과 주거환경 개선이 포함된다. 시범사업 참여자는 요양병원·시설 입소율이 비참여자보다 낮았다고 정부가 밝혔다.",
+      "path": "signals/2026-10/SIG-20261006-01.md"
+    }
+  ]
+}
