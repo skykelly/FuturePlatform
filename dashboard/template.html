@@ -436,7 +436,7 @@ function chatContext(){
   const dec = DATA.decisions.map(d=>`${d.id} [${d.status==="closed"?"결정 "+(d.decided||""):"대기"}] ${d.question} → ${d.decision||"미정"}`).join("\n");
   const h=(location.hash||"#overview").slice(1);
   const where = h.startsWith("wiki-") ? "문서 "+(SLUG_IDX[h.slice(5)]||h.slice(5)) : ({signals:"신호 레이더",digest:"다이제스트"}[h] || "개요(LG Future Platform 검토 보고)");
-  return `당신은 "LG Future Platform 검토 보고" 포털의 질의응답 도우미입니다. 이 포털은 LG전자가 플랫폼 사업자가 될 수 있는 9개 기회 영역(PF-01~09)을 8대 기준으로 평가하고, 국내외 신호로 2주마다 갱신하는 자료입니다. 데이터 기준일은 ${DATA.generated}입니다.
+  return `당신은 "LG Future Platform 검토 보고" 포털의 질의응답 도우미입니다. 이 포털은 LG전자가 플랫폼 사업자가 될 수 있는 9개 기회 영역(PF-01~09)을 8대 기준으로 평가하고, 국내외 신호로 매주 갱신하는 자료입니다. 데이터 기준일은 ${DATA.generated}입니다.
 
 답변 원칙:
 - 포털 데이터를 먼저 근거로 씁니다. 아래 요약으로 부족하면 도구로 문서·신호·다이제스트를 조회한 뒤 답합니다.

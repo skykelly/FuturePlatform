@@ -29,10 +29,10 @@
 
 ## 2. 국내외 뉴스 레이더 (웹 검색 25~35회)
 
-기간은 직전 실행 이후(기본 최근 14일). 쿼리에 연·월을 넣는다.
+기간은 직전 실행 이후(기본 최근 7일, 직전 다이제스트 날짜 다음 날부터). 실행 주기는 매주 수요일 07:00(Asia/Seoul). 쿼리에 연·월을 넣는다.
 
 1. **Thesis 레이더** — PF별로 `radar_ko`에서 1회, `radar_en`에서 1회 (총 18회 내외). 확신도 "상승·하락" Thesis와 Strategic Core는 1회 더.
-2. **글로벌 리서치 스윕** — 컨설팅(McKinsey·BCG·Bain·Deloitte·Accenture)과 투자은행(Goldman Sachs·Morgan Stanley·J.P. Morgan·UBS)의 최근 2주 발간물을 주제(agentic commerce, physical AI·robotics, smart home, energy flexibility, aging, circular economy)로 2~4회.
+2. **글로벌 리서치 스윕** — 컨설팅(McKinsey·BCG·Bain·Deloitte·Accenture)과 투자은행(Goldman Sachs·Morgan Stanley·J.P. Morgan·UBS)의 직전 실행 이후 발간물을 주제(agentic commerce, physical AI·robotics, smart home, energy flexibility, aging, circular economy)로 2~4회.
 3. **관찰 목록** — `watch` 항목마다 1회. 반대 근거도 함께 찾는다.
 4. **반증 조건** — 각 위키 섹션 7 핵심 리스크의 반증 조건이 실제로 일어났는지 확인하는 쿼리 2~3회.
 5. **수요층 지수** — 4개 지수 각 1회 (통계청·정부 발표 우선).
