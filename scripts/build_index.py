@@ -286,25 +286,60 @@ def main():
                 f"의사결정 대기 {len(open_d)}건 · 결정 완료 {sum(1 for d in decisions if d.get('status') == 'closed')}건")
         text = replace_block(text, "SNAPSHOT", snap) or text
 
-        # CHANGES
-        moved = sorted(calc, key=lambda k: -(calc[k]["current"]["total"] - calc[k]["baseline"]["total"]))
-        ups = [f"{pf} ({delta_str(calc[pf]['current']['total'] - calc[pf]['baseline']['total'])})" for pf in moved
-               if calc[pf]["current"]["total"] > calc[pf]["baseline"]["total"]]
-        downs = [f"{pf} ({delta_str(calc[pf]['current']['total'] - calc[pf]['baseline']['total'])})" for pf in moved
-                 if calc[pf]["current"]["total"] < calc[pf]["baseline"]["total"]]
-        qmoves = [f"{pf} {calc[pf]['baseline']['quadrant']} → {calc[pf]['current']['quadrant']}" for pf in sorted(calc)
-                  if calc[pf]["baseline"]["quadrant"] != calc[pf]["current"]["quadrant"]]
-        ch = [f"- 점수 상승: {', '.join(ups) or '없음'}",
+        # CHANGES — Last Month Change: 직전 월(달력 기준)의 변화. 첫 달(기준선 이후 한 달이 차기 전)은 기준선 이후 누적.
+        from datetime import timedelta
+        today = date.today()
+        first_this = today.replace(day=1)
+        prev_end = first_this - timedelta(days=1)
+        prev_start = prev_end.replace(day=1)
+        base_date = scores["baseline_meta"]["date"]
+        if prev_end.isoformat()[:7] <= base_date[:7]:  # 직전 월이 기준선 월 이전·같으면 첫 달 모드
+            p_start, p_end = base_date, today.isoformat()
+            p_label = f"9월 평가({base_date}) 이후 누적, {today.isoformat()}까지 (첫 달)"
+        else:
+            p_start, p_end = prev_start.isoformat(), prev_end.isoformat()
+            p_label = f"{prev_start.year}년 {prev_start.month}월 ({p_start} ~ {p_end})"
+        qr = scores["quadrant_rule"]
+
+        def state_at(pf, d):
+            """d 시점(그날 포함)의 점수: current에서 d 이후 변경을 되돌린다."""
+            v = dict(scores["pf"][pf]["current"])
+            for h in sorted(scores["history"], key=lambda h: h["date"], reverse=True):
+                if h["pf"] == pf and h["date"] > d:
+                    v[h["criterion"]] = h["from"]
+            x = sum(v[k] for k in qr["x"]); y = sum(v[k] for k in qr["y"])
+            key = ("H" if x >= qr["x_threshold"] else "L") + ("H" if y >= qr["y_threshold"] else "L")
+            return sum(v[k] for k in crit_keys), qr["names"][key]
+
+        def day_before(d):
+            return (date.fromisoformat(d) - timedelta(days=1)).isoformat()
+
+        start_ref = base_date if p_start == base_date else day_before(p_start)
+        per = {}
+        for pf in sorted(calc):
+            t0, q0 = state_at(pf, start_ref); t1, q1 = state_at(pf, p_end)
+            per[pf] = (t0, t1, q0, q1)
+        moved = sorted(per, key=lambda k: -(per[k][1] - per[k][0]))
+        ups = [f"{pf} ({delta_str(per[pf][1] - per[pf][0])})" for pf in moved if per[pf][1] > per[pf][0]]
+        downs = [f"{pf} ({delta_str(per[pf][1] - per[pf][0])})" for pf in moved if per[pf][1] < per[pf][0]]
+        qmoves = [f"{pf} {per[pf][2]} → {per[pf][3]}" for pf in sorted(per) if per[pf][2] != per[pf][3]]
+        hist = [h for h in scores["history"] if (h["date"] >= p_start if p_start != base_date else True) and h["date"] <= p_end]
+        n_sig = sum(1 for s_ in signals if p_start <= s_["collected"] <= p_end) if p_start != base_date else len([s_ for s_ in signals if s_["collected"] <= p_end])
+        ch = [f"**기간** {p_label} · 반영 신호 {n_sig}건 · 점수 조정 {len(hist)}건", "",
+              f"- 점수 상승: {', '.join(ups) or '없음'}",
               f"- 점수 하락: {', '.join(downs) or '없음'}",
-              f"- 사분면 이동: {', '.join(qmoves) or '없음 (9개 모두 9월 그룹 유지)'}",
-              "", "**점수 조정 내역**", "",
-              "| 기회 | 기준 | 9월 → 현재 | 조정 사유 | 근거 |", "|---|---|:-:|---|---|"]
-        for h in sorted(scores["history"], key=lambda h: (h["date"], h["pf"]), reverse=True):
-            refs = " ".join(f"[[{s}]]" for s in h["signals"])
-            ch.append(f"| [[{h['pf']}]] {thesis[h['pf']]['name']} | {crit_label[h['criterion']]} | "
-                      f"{fmt(h['from'])}→**{fmt(h['to'])}** | {h['rationale']} | {refs} |")
+              f"- 사분면 이동: {', '.join(qmoves) or '없음'}",
+              "", "**점수 조정 내역**", ""]
+        if hist:
+            ch += ["| 기회 | 기준 | 변경 | 조정 사유 | 근거 |", "|---|---|:-:|---|---|"]
+            for h in sorted(hist, key=lambda h: (h["date"], h["pf"]), reverse=True):
+                refs = " ".join(f"[[{s_}]]" for s_ in h["signals"])
+                ch.append(f"| [[{h['pf']}]] {thesis[h['pf']]['name']} | {crit_label[h['criterion']]} | "
+                          f"{fmt(h['from'])}→**{fmt(h['to'])}** | {h['rationale']} | {refs} |")
+        else:
+            ch.append("이 기간에는 점수 조정이 없었습니다.")
         if scores["watch"]:
-            ch += ["", "**관찰 항목** (근거가 상충해 점수를 유지하고 추이를 확인 중)", "",
+            ch += ["", "**관찰 항목** (근거가 상충해 점수를 유지하고 추이를 확인 중, 현재 기준)", "",
                    "| 기회 | 기준 | 우려 방향 | 확인 내용 |", "|---|---|:-:|---|"]
             for w in scores["watch"]:
                 ch.append(f"| [[{w['pf']}]] {thesis[w['pf']]['name']} | {crit_label[w['criterion']]} | "
