@@ -32,7 +32,7 @@ LG Future Platform Thesis 9개(PF-01~09)를 **살아있는 가설**로 운영하
 
 ## 포털
 
-빌드 결과 `dashboard/dist.html`이 Claude 아티팩트로 게시된다. 홈(이번 회차, 포트폴리오 지도, Thesis 카드, 점수 변경·관찰, 최근 신호), Thesis 위키 리더, 신호 레이더, 다이제스트로 구성된다.
+빌드 결과 `dashboard/dist.html`이 Claude 아티팩트로 게시된다. 홈(이번 회차, 포트폴리오 지도, Thesis 카드, 점수 변경·관찰, 최근 신호), 9개 플랫폼 기회 영역 리더, 신호 레이더, 다이제스트로 구성된다.
 
 ## Obsidian
 
