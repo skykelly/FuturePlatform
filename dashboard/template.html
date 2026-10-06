@@ -172,6 +172,30 @@ h1,h2,h3{text-wrap:balance}
 @media (max-width:760px){.two{grid-template-columns:minmax(0,1fr)}.wiki{grid-template-columns:minmax(0,1fr)}.toc{position:static;grid-template-columns:repeat(2,minmax(0,1fr))}.toc .grp{grid-column:1/-1}.doc{padding:18px 16px}}
 @media (max-width:560px){.cards{grid-template-columns:minmax(0,1fr)}nav{margin-left:0}}
 @media (prefers-reduced-motion:no-preference){.tcard,.toc a{transition:background .15s,border-color .15s}}
+/* chat */
+.chat-fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:19;display:flex;align-items:center;gap:8px;background:var(--accent);color:var(--accent-ink);border:0;border-radius:999px;padding:11px 16px;font:inherit;font-size:.9rem;font-weight:500;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.chat-fab:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.chat-fab svg{width:18px;height:18px}
+.chat{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:19;width:min(420px,calc(100vw - 32px));height:min(640px,calc(100dvh - 96px));background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.2);display:grid;grid-template-rows:auto minmax(0,1fr) auto;overflow:hidden}
+.chat-h{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line);background:var(--surface2)}
+.chat-h b{font-size:.92rem;font-weight:500;flex:1}
+.chat-h button{background:none;border:1px solid var(--line);color:var(--ink);border-radius:4px;padding:3px 9px;font:inherit;font-size:.78rem;cursor:pointer}
+.chat-log{overflow:auto;padding:14px 12px;display:grid;gap:12px;align-content:start}
+.chat-note{color:var(--muted);font-size:.82rem;line-height:1.6}
+.msg{max-width:100%;font-size:.88rem;line-height:1.65;word-break:keep-all;overflow-wrap:break-word}
+.msg.u{justify-self:end;background:var(--accent-soft);padding:8px 11px;border-radius:10px 10px 2px 10px;max-width:88%;white-space:pre-wrap}
+.msg.a{background:var(--surface2);border:1px solid var(--line);padding:10px 12px;border-radius:10px 10px 10px 2px}
+.msg.a p{margin:.3em 0}.msg.a ul,.msg.a ol{margin:.3em 0;padding-left:1.3em}.msg.a h1,.msg.a h2,.msg.a h3{font-size:.95rem;margin:.6em 0 .3em}
+.msg.a table{border-collapse:collapse;font-size:.8rem;display:block;overflow-x:auto}.msg.a th,.msg.a td{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left;vertical-align:top;word-break:keep-all}
+.msg .st{color:var(--muted);font-size:.8rem;font-family:var(--f-mono)}
+.msg .err{color:var(--neg);font-size:.82rem;margin-top:6px}
+.chat-f{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:10px 12px;border-top:1px solid var(--line)}
+.chat-f textarea{resize:none;font:inherit;font-size:.88rem;line-height:1.5;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);min-height:40px;max-height:140px}
+.chat-f textarea:focus{outline:2px solid var(--accent);outline-offset:-1px}
+.chat-f button{background:var(--accent);color:var(--accent-ink);border:0;border-radius:6px;padding:0 14px;font:inherit;font-size:.86rem;font-weight:500;cursor:pointer}
+.chat-f button.stop{background:var(--neg)}
+.chat-f button:disabled{opacity:.5;cursor:default}
+@media (max-width:560px){.chat{height:calc(100dvh - 32px)}}
 </style>
 
 <header class="top"><div class="top-in">
@@ -191,6 +215,12 @@ h1,h2,h3{text-wrap:balance}
   <section class="view" id="v-digest" hidden></section>
 </main>
 <aside class="drawer" id="drawer" hidden aria-label="신호 상세"></aside>
+<button class="chat-fab" id="chat-fab" type="button" hidden aria-controls="chat" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>질문하기</button>
+<section class="chat" id="chat" hidden aria-label="포털 질의응답">
+  <div class="chat-h"><b>포털 질의응답</b><button type="button" id="chat-new">새 대화</button><button type="button" id="chat-close" aria-label="닫기">닫기</button></div>
+  <div class="chat-log" id="chat-log" aria-live="polite"></div>
+  <form class="chat-f" id="chat-form"><textarea id="chat-in" rows="1" placeholder="포털 내용에 대해 질문하세요" aria-label="질문 입력"></textarea><button type="submit" id="chat-send">보내기</button></form>
+</section>
 
 <script>
 const DATA = /*__DATA__*/null;
@@ -373,7 +403,7 @@ document.addEventListener("click",e=>{
   const f=e.target.closest("a[data-focus]");
   if(f){ e.preventDefault(); $("drawer").hidden=true; location.hash="signals"; setTimeout(()=>signalsView(f.dataset.focus),0); }
 });
-document.addEventListener("keydown",e=>{ if(e.key==="Escape") $("drawer").hidden=true; });
+document.addEventListener("keydown",e=>{ if(e.key!=="Escape") return; if(!$("drawer").hidden){ $("drawer").hidden=true; return; } if($("chat")&&!$("chat").hidden) chatOpen(false); });
 
 /* ---------- router ---------- */
 function route(){
@@ -391,4 +421,142 @@ function route(){
 }
 window.addEventListener("hashchange",route);
 route();
+
+/* ---------- chat (포털 질의응답) ---------- */
+const CHAT = { sample:null, tools:false, turns:[], busy:false, ctl:null };
+const stripAuto = t => String(t||"").replace(/^---\n[\s\S]*?\n---\n?/, "").replace(/<!-- \/?(AUTO|VIZ):[A-Z]+ -->/g, "");
+function chatContext(){
+  const crit = DATA.criteria.map(c=>[c.key,c.label]);
+  const pf = Object.values(DATA.thesis).sort((a,b)=>a.id.localeCompare(b.id)).map(t=>{
+    const c=t.calc.current, b=t.calc.baseline;
+    return `${t.id} ${t.name}(${t.name_ko}) | ${c.quadrant} | 총점 ${c.total} (9월 ${b.total}) | 가로축 ${c.x} 세로축 ${c.y} | 확신도 ${t.conviction} | Control Point: ${t.control_point} | `+crit.map(([k,l])=>`${l} ${c.scores[k]}`).join(", ");
+  }).join("\n");
+  const hist = DATA.history.map(x=>`${x.date} ${x.pf} ${(crit.find(c=>c[0]===x.criterion)||[,x.criterion])[1]} ${x.from}→${x.to}: ${x.rationale}`).join("\n");
+  const watch = DATA.watch.map(w=>`${w.pf} ${(crit.find(c=>c[0]===w.criterion)||[,w.criterion])[1]}: ${w.note}`).join("\n") || "없음";
+  const dec = DATA.decisions.map(d=>`${d.id} [${d.status==="closed"?"결정 "+(d.decided||""):"대기"}] ${d.question} → ${d.decision||"미정"}`).join("\n");
+  const h=(location.hash||"#overview").slice(1);
+  const where = h.startsWith("wiki-") ? "문서 "+(SLUG_IDX[h.slice(5)]||h.slice(5)) : ({signals:"신호 레이더",digest:"다이제스트"}[h] || "개요(LG Future Platform 검토 보고)");
+  return `당신은 "LG Future Platform 검토 보고" 포털의 질의응답 도우미입니다. 이 포털은 LG전자가 플랫폼 사업자가 될 수 있는 9개 기회 영역(PF-01~09)을 8대 기준으로 평가하고, 국내외 신호로 2주마다 갱신하는 자료입니다. 데이터 기준일은 ${DATA.generated}입니다.
+
+답변 원칙:
+- 포털 데이터를 먼저 근거로 씁니다. 아래 요약으로 부족하면 도구로 문서·신호·다이제스트를 조회한 뒤 답합니다.
+- 포털에 없는 내용은 일반 지식으로 보충해도 됩니다. 이때 해당 문장 끝에 "(일반 지식)"이라고 표시해 포털 근거와 구분합니다.
+- 포털 근거의 수치·날짜는 조회한 내용 그대로 씁니다. 수치를 지어내지 않습니다.
+- 근거 신호는 [[SIG-20261006-13]], 문서는 [[PF-01]], [[PF-01-study]], [[Appendix-C]]처럼 이중 대괄호로 표기합니다. 화면에서 링크로 바뀝니다.
+- 한국어 보고체("~습니다")로, 결론을 먼저 쓰고 간결하게 답합니다. 필요하면 짧은 목록이나 표를 씁니다.
+
+사분면 규칙: 가로축 = LG 독점우위 + 실행 용이성, 세로축 = 네트워크 효과 + TAM, 각 8.0 이상이 상위. 상위·상위 Strategic Core, 가로 하위·세로 상위 Moonshots, 가로 상위·세로 하위 Quick Wins, 둘 다 하위 Hedge & Defense. 기준선은 2026-09 평가이며 변경 단위는 0.5점입니다.
+
+[9개 기회 현재 상태]
+${pf}
+
+[9월 이후 점수 변경]
+${hist}
+
+[관찰 항목]
+${watch}
+
+[의사결정 사항]
+${dec}
+
+[조회 가능한 문서] ${Object.keys(DATA.wiki).join(", ")}
+PF 문서 장 구성: 1 사업 가설 · 2 시장 성숙도와 고객 수용도 · 3 LG의 비대칭 자산 · 4 종합 평가 · 5 판단 근거 · 6 경쟁 지형 · 7 핵심 리스크 · 8 점검 지표 · 9 추진 로드맵 · 10 연계 과제 · 11 평가 변경 내역 · 12 Source
+
+사용자가 지금 보고 있는 화면: ${where}`;
+}
+function docChapters(key){
+  const t=stripAuto(DATA.wiki[key]); const out=[]; let cur={title:"(머리말)",body:[]};
+  for(const line of t.split("\n")){ if(/^## /.test(line)){ out.push(cur); cur={title:line.slice(3).trim(),body:[]}; } else cur.body.push(line); }
+  out.push(cur); return out.map(c=>({title:c.title,text:c.body.join("\n").trim()}));
+}
+const CHAT_TOOLS = [
+  { name:"get_document",
+    description:"포털 문서 하나를 읽습니다. key는 'PF-01'~'PF-09', 'PF-01-study' 같은 심층 분석, 'Portfolio'(개요), 'Appendix-A'~'Appendix-C', 수요층 지수 이름. chapter에 장 번호(예: 3)나 제목 일부를 주면 그 장만, 생략하면 장 목록과 앞부분을 돌려줍니다.",
+    inputSchema:{type:"object",properties:{key:{type:"string"},chapter:{type:"string"}},required:["key"]},
+    execute(inp){
+      const key=String(inp.key||"").trim(); if(!DATA.wiki[key]) throw new Error("없는 문서: "+key+". 가능한 문서: "+Object.keys(DATA.wiki).join(", "));
+      chatStatus(`문서 조회: ${key}${inp.chapter?" "+inp.chapter+"장":""}`);
+      const ch=docChapters(key);
+      if(inp.chapter){ const q=String(inp.chapter).trim(); const hit=ch.find(c=>c.title.startsWith(q+".")||c.title.startsWith(q+" ")||c.title.includes(q));
+        if(!hit) throw new Error("장을 찾지 못했습니다. 장 목록: "+ch.map(c=>c.title).join(" / "));
+        return {key, chapter:hit.title, text:hit.text.slice(0,14000)}; }
+      return {key, chapters:ch.map(c=>c.title), opening:ch.slice(0,3).map(c=>"## "+c.title+"\n"+c.text).join("\n\n").slice(0,6000)};
+    }},
+  { name:"search_signals",
+    description:"신호(외부 근거) 목록을 검색합니다. query는 제목·요지·출처의 키워드, pf는 'PF-05' 같은 기회 번호, direction은 '+'(강화) '-'(약화) 'new'. 각 신호의 id, 제목, 출처, 발행일, 등급, 방향, 강도, 요지를 최대 limit건(기본 8, 최대 15) 돌려줍니다.",
+    inputSchema:{type:"object",properties:{query:{type:"string"},pf:{type:"string"},direction:{type:"string"},limit:{type:"number"}}},
+    execute(inp){
+      chatStatus(`신호 검색${inp.query?": "+inp.query:""}${inp.pf?" ("+inp.pf+")":""}`);
+      const terms=String(inp.query||"").toLowerCase().split(/\s+/).filter(Boolean);
+      const lim=Math.min(15,Math.max(1,Number(inp.limit)||8));
+      let rows=DATA.signals.filter(s=>(!inp.pf||s.pf.includes(String(inp.pf)))&&(!inp.direction||s.direction===String(inp.direction)));
+      if(terms.length){ rows=rows.map(s=>{const hay=(s.title+" "+s.summary+" "+s.source+" "+s.tier).toLowerCase(); return [terms.filter(t=>hay.includes(t)).length,s];}).filter(r=>r[0]>0).sort((a,b)=>b[0]-a[0]).map(r=>r[1]); }
+      return {total:rows.length, signals:rows.slice(0,lim).map(s=>({id:s.id,title:s.title,source:s.source,published:s.published,tier:s.tier,direction:s.direction,strength:s.strength,pf:s.pf,criteria:s.criteria,summary:s.summary}))};
+    }},
+  { name:"search_documents",
+    description:"모든 포털 문서(PF 문서, 심층 분석, 개요, 부록, 지수 노트)에서 키워드가 들어간 문단을 찾습니다. 어느 문서의 어느 장에 있는지와 해당 문단을 최대 12건 돌려줍니다. 특정 경쟁사·제도·용어가 어디에 나오는지 찾을 때 씁니다.",
+    inputSchema:{type:"object",properties:{query:{type:"string"}},required:["query"]},
+    execute(inp){
+      const q=String(inp.query||"").trim().toLowerCase(); if(!q) throw new Error("query가 비었습니다");
+      chatStatus("문서 검색: "+inp.query);
+      const hits=[];
+      for(const key of Object.keys(DATA.wiki)){ for(const c of docChapters(key)){ for(const para of c.text.split(/\n(?=\S)/)){ if(para.toLowerCase().includes(q)){ hits.push({key,chapter:c.title,text:para.trim().slice(0,600)}); if(hits.length>=12) return {hits}; } } } }
+      return {hits};
+    }},
+  { name:"get_digest",
+    description:"회차별 다이제스트(점검 요약)를 읽습니다. date를 생략하면 가장 최근 회차. 이번 회차 핵심, 점수 변경, 관찰, 다음 관찰 포인트가 들어 있습니다.",
+    inputSchema:{type:"object",properties:{date:{type:"string"}}},
+    execute(inp){
+      chatStatus("다이제스트 조회");
+      const d=inp.date?DATA.digests.find(x=>x.date===String(inp.date)):DATA.digests[0];
+      if(!d) throw new Error("다이제스트 없음. 가능한 날짜: "+DATA.digests.map(x=>x.date).join(", "));
+      return {date:d.date, kind:d.kind, text:stripAuto(d.markdown).slice(0,12000), all_dates:DATA.digests.map(x=>x.date)};
+    }},
+];
+let chatStatusEl=null;
+function chatStatus(t){ if(chatStatusEl) chatStatusEl.textContent=t+" …"; }
+function chatAdd(cls,html){ const d=document.createElement("div"); d.className="msg "+cls; d.innerHTML=html; $("chat-log").append(d); $("chat-log").scrollTop=$("chat-log").scrollHeight; return d; }
+function chatSetBusy(b){ CHAT.busy=b; const btn=$("chat-send"); btn.textContent=b?"중지":"보내기"; btn.classList.toggle("stop",b); $("chat-in").disabled=b; }
+function chatIntro(){ $("chat-log").innerHTML=""; chatAdd("a chat-note-wrap",`<div class="chat-note">포털의 9개 기회 문서, 신호 ${DATA.signals.length}건, 점수와 의사결정 사항을 근거로 답합니다. 포털에 없는 내용은 일반 지식으로 보충하고 "(일반 지식)"으로 표시합니다. 답변은 보는 사람의 Claude 사용량으로 처리되며, 처음 질문할 때 사용 동의를 묻습니다.</div>`); }
+const CHAT_ERR = {rate_limited:"요청이 많아 잠시 멈췄습니다. 조금 뒤 다시 질문해 주세요.", session_expired:"Claude 로그인이 만료되었습니다. 다시 로그인한 뒤 질문해 주세요.", refused:"이 질문에는 답할 수 없습니다. 질문을 바꿔 주세요.", empty_completion:"답변이 비어 있습니다. 질문을 조금 바꿔 다시 시도해 주세요.", prompt_too_large:"대화가 너무 길어졌습니다. 새 대화로 시작해 주세요.", upstream_error:"연결이 끊겼습니다. 다시 보내 주세요."};
+const CHAT_OFF = ["not_granted","sampling_disabled","not_declared","capability_disabled","capability_removed"];
+async function chatSend(q){
+  CHAT.turns.push({role:"user",content:q});
+  if(CHAT.turns.length>16) CHAT.turns=CHAT.turns.slice(-16);
+  while(CHAT.turns.length && CHAT.turns[0].role!=="user") CHAT.turns.shift();
+  chatAdd("u",esc(q));
+  const bub=chatAdd("a",`<div class="st">생각 중 …</div>`); chatStatusEl=bub.querySelector(".st");
+  CHAT.ctl=new AbortController(); chatSetBusy(true);
+  const opts={cache:false, signal:CHAT.ctl.signal, onText:({text})=>{ chatStatusEl=null; bub.innerHTML=md(text); $("chat-log").scrollTop=$("chat-log").scrollHeight; }};
+  if(CHAT.tools) opts.tools=CHAT_TOOLS;
+  try{
+    const {text,truncated}=await CHAT.sample([{role:"user",content:chatContext()}, ...CHAT.turns], opts);
+    bub.innerHTML=md(text)+(truncated?`<div class="err">답변이 길이 제한으로 잘렸습니다. 범위를 좁혀 다시 질문해 주세요.</div>`:"");
+    CHAT.turns.push({role:"assistant",content:text});
+  }catch(e){
+    CHAT.turns.pop();
+    const kept=e&&e.text&&e.code!=="refused"?md(e.text):"";
+    if(e&&e.code==="cancelled"){ bub.innerHTML=kept||`<div class="chat-note">중지했습니다.</div>`; }
+    else if(e&&CHAT_OFF.includes(e.code)){ bub.innerHTML=`<div class="err">이 화면에서는 Claude 질의 기능을 사용할 수 없습니다.</div>`; $("chat-in").disabled=true; $("chat-send").disabled=true; chatStatusEl=null; CHAT.ctl=null; CHAT.busy=false; return; }
+    else if(e&&e.code==="tools_unavailable"){ CHAT.tools=false; bub.innerHTML=`<div class="err">이 화면에서는 문서 조회 기능을 쓸 수 없어 요약 정보만으로 답합니다. 질문을 다시 보내 주세요.</div>`; }
+    else bub.innerHTML=kept+`<div class="err">${esc(CHAT_ERR[e&&e.code]||CHAT_ERR.upstream_error)}</div>`;
+  }finally{ chatStatusEl=null; CHAT.ctl=null; if(!$("chat-send").disabled) chatSetBusy(false); $("chat-in").focus(); }
+}
+function chatOpen(open){ $("chat").hidden=!open; $("chat-fab").hidden=open; $("chat-fab").setAttribute("aria-expanded",String(open)); if(open){ if(!$("chat-log").children.length) chatIntro(); $("chat-in").focus(); } else $("chat-fab").focus(); }
+async function chatInit(){
+  if(!DATA || !window.claude || typeof window.claude.use!=="function") return;
+  let sample=null; try{ sample=await window.claude.use("sample"); }catch(_){ sample=null; }
+  if(!sample) return;
+  CHAT.sample=sample;
+  try{ const lim=await sample.limits(); CHAT.tools=!!(lim&&lim.tools&&lim.tools.maxCount>=CHAT_TOOLS.length); }catch(_){ CHAT.tools=false; }
+  $("chat-fab").hidden=false;
+  $("chat-fab").onclick=()=>chatOpen(true);
+  $("chat-close").onclick=()=>chatOpen(false);
+  $("chat-new").onclick=()=>{ if(CHAT.ctl) CHAT.ctl.abort(); CHAT.turns=[]; chatIntro(); $("chat-in").focus(); };
+  const ta=$("chat-in");
+  ta.addEventListener("input",()=>{ ta.style.height="auto"; ta.style.height=Math.min(ta.scrollHeight,140)+"px"; });
+  ta.addEventListener("keydown",e=>{ if(e.key==="Enter"&&!e.shiftKey&&!e.isComposing){ e.preventDefault(); $("chat-form").requestSubmit(); } });
+  $("chat-form").addEventListener("submit",e=>{ e.preventDefault(); if(CHAT.busy){ CHAT.ctl&&CHAT.ctl.abort(); return; } const q=ta.value.trim(); if(!q) return; ta.value=""; ta.style.height="auto"; chatSend(q); });
+}
+chatInit();
 </script>

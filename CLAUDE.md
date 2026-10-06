@@ -134,6 +134,8 @@ git add -A && git commit -m "radar: YYYY-MM-DD 신호 N건, 점수 변경 M건" 
 
 `dashboard/dist.html`을 Artifact 도구로 아래 URL에 다시 게시한다 (같은 URL 유지, icon 생략). 다른 세션에서는 먼저 `action: "read"`로 읽은 뒤 게시한다.
 - Portal URL: https://claude.ai/artifact/Ms1tRpckbYjRzBc1kLAPNW
+- 포털에는 우하단 질의응답 창이 있다(`sample` 기능, 보는 사람의 Claude 사용량으로 처리). 재게시할 때 `capabilities`를 생략하면 기존 선언이 유지된다. 빈 객체 `{}`를 넘기면 질의응답이 꺼지므로 넘기지 않는다.
+- 질의응답은 빌드 데이터(`DATA`)를 그대로 조회하므로, 문서·신호·점수를 갱신하고 빌드하면 답변 근거도 함께 갱신된다.
 
 ## 10. 보고
 
