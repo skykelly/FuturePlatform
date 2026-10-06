@@ -127,11 +127,41 @@ h1,h2,h3{text-wrap:balance}
 .doc th,.doc td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}
 .doc th{font-weight:500;color:var(--muted);font-size:.78rem}
 .doc td:nth-child(n+2){font-variant-numeric:tabular-nums}
+.doc th,.doc td{word-break:keep-all;overflow-wrap:anywhere}
 .tw{overflow-x:auto;margin:8px 0}
 .doc code{font-family:var(--f-mono);font-size:.85em;background:var(--chip);padding:1px 4px;border-radius:3px}
 .doc ol li,.doc ul li{margin:4px 0}
 .wl{font-family:var(--f-mono);font-size:.82em;text-decoration:none;background:var(--accent-soft);padding:0 5px;border-radius:3px;white-space:nowrap}
 .doc-head{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin-bottom:12px;font-family:var(--f-mono);font-size:.78rem;color:var(--muted)}
+/* overview */
+.ovdoc{padding:28px 34px}
+.ovdoc h1{font-size:1.75rem;letter-spacing:-.015em;margin-bottom:10px}
+.ovdoc h2{scroll-margin-top:calc(env(safe-area-inset-top,0px) + 70px);font-size:1.25rem}
+.ovdoc h3{scroll-margin-top:80px}
+.ovdoc > blockquote:first-of-type{font-size:1.02rem}
+.ovdoc hr{border:0;border-top:1px solid var(--line);margin:22px 0}
+.doc details{border:1px solid var(--line);border-radius:6px;margin:8px 0;background:var(--surface2)}
+.doc details > summary{cursor:pointer;padding:10px 14px;list-style:none;display:flex;gap:8px;align-items:baseline}
+.doc details > summary::-webkit-details-marker{display:none}
+.doc details > summary::before{content:"+";font-family:var(--f-mono);color:var(--accent);width:1em;flex:none}
+.doc details[open] > summary::before{content:"−"}
+.doc details > *:not(summary){margin-left:14px;margin-right:14px}
+.doc details[open]{padding-bottom:6px}
+.viz{margin:14px 0}
+.stacks{display:grid;gap:10px}
+.srow{display:grid;grid-template-columns:170px minmax(0,1fr);gap:12px;align-items:center;background:var(--surface2);border:1px solid var(--line);border-radius:6px;padding:10px 12px}
+.slab{display:grid;gap:2px}
+.slab b{font-size:.92rem}
+.slab span{font-size:.75rem;color:var(--muted)}
+.snodes{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.snode{display:grid;gap:1px;text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--qc);border-radius:4px;padding:6px 10px;min-width:0}
+.snode:hover,.snode:focus-visible{border-color:var(--accent);outline:none}
+.snode b{font-size:.84rem;font-weight:500}
+.snode small{font-size:.72rem;color:var(--muted)}
+.snode .pfid{font-size:.7rem}
+.sep{color:var(--muted);font-family:var(--f-mono)}
+.mapcard.viz{max-width:560px}
+@media (max-width:760px){.ovdoc{padding:20px 16px}.srow{grid-template-columns:minmax(0,1fr)}}
 /* drawer */
 .drawer{position:fixed;right:0;top:0;bottom:0;width:min(440px,100%);background:var(--surface);border-left:1px solid var(--line);box-shadow:-8px 0 24px rgba(0,0,0,.12);padding:calc(env(safe-area-inset-top,0px) + 18px) 18px calc(env(safe-area-inset-bottom,0px) + 18px);overflow:auto;z-index:20;display:grid;gap:10px;align-content:start}
 .drawer .close{justify-self:end;background:none;border:1px solid var(--line);color:var(--ink);border-radius:4px;padding:4px 10px;font:inherit;font-size:.85rem;cursor:pointer}
@@ -145,15 +175,15 @@ h1,h2,h3{text-wrap:balance}
 <header class="top"><div class="top-in">
   <div class="brand">FuturePlatform <small id="gen"></small></div>
   <nav aria-label="섹션">
-    <a href="#home" data-v="home">홈</a>
-    <a href="#wiki-Portfolio" data-v="wiki">Thesis 위키</a>
+    <a href="#overview" data-v="overview">개요</a>
+    <a href="#wiki-PF-01" data-v="wiki">Thesis 위키</a>
     <a href="#signals" data-v="signals">신호 레이더</a>
     <a href="#digest" data-v="digest">다이제스트</a>
   </nav>
 </div></header>
 
 <main>
-  <section class="view" id="v-home"></section>
+  <section class="view" id="v-overview"></section>
   <section class="view" id="v-wiki" hidden></section>
   <section class="view" id="v-signals" hidden></section>
   <section class="view" id="v-digest" hidden></section>
@@ -179,16 +209,27 @@ function md(src){
     k = k.trim();
     if (k.startsWith("SIG-")) return `<a class="wl" href="#signals" data-sig="${esc(k)}">${esc(k.replace("SIG-",""))}</a>`;
     if (IDX_SLUG[k]) return `<a class="wl" href="#wiki-${IDX_SLUG[k]}">${esc(k)}</a>`;
+    if (k === "Portfolio") return `<a class="wl" href="#overview">개요</a>`;
     return `<a class="wl" href="#wiki-${esc(k)}">${esc(k)}</a>`;
   });
   let html;
   if (window.marked && marked.parse) html = marked.parse(s, {gfm:true, breaks:false});
   else html = '<pre style="white-space:pre-wrap;font-family:inherit">'+esc(s)+"</pre>";
-  return html.replace(/<table>/g,'<div class="tw"><table>').replace(/<\/table>/g,'</table></div>');
+  html = html.replace(/<table>/g,'<div class="tw"><table>').replace(/<\/table>/g,'</table></div>');
+  html = html.replace(/<!-- VIZ:MAP -->/g, ()=>`<figure class="mapcard viz">${mapSVG()}<figcaption class="legend">${Object.entries(QC).map(([n,c])=>`<span><i style="background:${c}"></i>${n}</span>`).join("")}<span>· 점선 원은 9월 기준선 위치</span></figcaption></figure>`);
+  html = html.replace(/<!-- VIZ:STACKS -->/g, ()=>stacksHTML());
+  return html;
+}
+function stacksHTML(){
+  const rows=[["Physical AI","로봇과 공간의 실행 계층",["PF-02","PF-03","PF-06"],"→"],
+              ["Household","집과 생활의 의사결정 계층",["PF-07","PF-01","PF-08","PF-09"],"→"],
+              ["Distribution & Infra","접근 경로와 자원 계층",["PF-04","PF-05"],"·"]];
+  return `<div class="stacks viz">${rows.map(([n,sub,ids,sep])=>`<div class="srow"><div class="slab"><b>${esc(n)}</b><span>${esc(sub)}</span></div><div class="snodes">${ids.map((id,i)=>{
+    const t=DATA.thesis[id], k=t.calc.current;
+    return `${i?`<span class="sep" aria-hidden="true">${sep}</span>`:""}<a class="snode" href="#wiki-${id}" style="--qc:${QC[k.quadrant]}"><span class="pfid">${id}</span><b>${esc(t.name)}</b><small>${esc(t.name_ko)} · ${f1(k.total)}점</small></a>`;}).join("")}</div></div>`).join("")}</div>`;
 }
 
 /* ---------- home ---------- */
-function latestDigest(){ return DATA.digests[0]; }
 function digestBullets(d){
   const m = d.markdown.match(/## 이번 회차 핵심 3가지\n([\s\S]*?)(\n## |$)/);
   if(!m) return [];
@@ -233,51 +274,19 @@ function strip(id){
     return `<i style="background:var(${h})" class="${v!==b?"chg":""}" title="${esc(k.label)} ${f1(v)}${v!==b?` (기준선 ${f1(b)})`:""}"></i>`;}).join("")}</div>
   <div class="strip-l">${["TAM","가치","독점","네트","해자","수익","실행","차별"].map(x=>`<span>${x}</span>`).join("")}</div>`;
 }
-function home(){
-  const S=DATA.signals, d=latestDigest(), bl=d?digestBullets(d):[];
-  const tiers={}; S.forEach(s=>tiers[s.tier]=(tiers[s.tier]||0)+1);
-  const chg=DATA.history.length, w=DATA.watch.length;
-  const lastUpd = {}; DATA.feed.forEach(f=>{ if(!lastUpd[f.pf]) lastUpd[f.pf]=f; });
-  const titleM = d && d.markdown.match(/^# (.+)$/m);
-  let h = `<div class="hero">
-    <article class="brief">
-      <p class="eyebrow">이번 회차 · ${esc(d?d.date:"")}</p>
-      <h1>${esc(titleM?titleM[1]:"최신 다이제스트")}</h1>
-      <div class="stats"><div><b>${S.length}</b><span>신호</span></div><div><b>${chg}</b><span>점수 변경</span></div><div><b>${w}</b><span>관찰 중</span></div><div><b>${(tiers["컨설팅"]||0)+(tiers["투자은행"]||0)}</b><span>컨설팅·IB</span></div></div>
-      <ol>${bl.map(x=>{const m=x.match(/^\*\*(.+?)\*\*\s*([\s\S]*)$/);return `<li>${m?`<strong>${esc(m[1])}</strong>${md(m[2]).replace(/^<p>|<\/p>\s*$/g,"")}`:md(x)}</li>`}).join("")}</ol>
-      <a href="#digest">다이제스트 전문 보기</a>
-    </article>
-    <figure class="mapcard" style="margin:0">
-      <p class="eyebrow" style="margin:0">포트폴리오 지도 · 점선 원은 기준선 위치</p>
-      ${mapSVG()}
-      <div class="legend">${Object.entries(QC).map(([n,c])=>`<span><i style="background:${c}"></i>${n}</span>`).join("")}</div>
-    </figure>
-  </div>`;
-  const order=[...PF_IDS].sort((a,b)=>DATA.thesis[b].calc.current.total-DATA.thesis[a].calc.current.total);
-  h += `<section><div class="sec-h"><h2>9개 Platform Thesis</h2><a href="#wiki-Portfolio">포트폴리오 개요</a></div><div class="cards">${order.map(id=>{
-    const t=DATA.thesis[id], c=t.calc, k=c.current, b=c.baseline;
-    const mine=S.filter(s=>s.pf.includes(id)), pos=mine.filter(s=>s.direction==="+").length, neg=mine.filter(s=>s.direction==="-").length;
-    const u=lastUpd[id];
-    return `<a class="tcard" href="#wiki-${id}">
-      <div class="tc-top"><span class="pfid">${id}</span><span class="qchip" style="color:${QC[k.quadrant]}">${esc(k.quadrant)}</span></div>
-      <h3>${esc(t.name)}<small>${esc(t.name_ko)} · ${esc(t.control_point)}</small></h3>
-      <div class="score"><b>${f1(k.total)}</b><span>/ 40</span>${dlt(k.total-b.total)}<span>확신도 ${esc(t.conviction)}</span></div>
-      ${strip(id)}
-      <p>${esc(t.one_liner)}</p>
-      <div class="tc-foot"><span>신호 ${mine.length}</span><span class="d-up">강화 ${pos}</span><span class="d-dn">약화 ${neg}</span></div>
-      ${u?`<div class="tc-upd">${esc(u.date)} · ${esc(u.text)}</div>`:""}
-    </a>`}).join("")}</div></section>`;
-  const lab=Object.fromEntries(DATA.criteria.map(c=>[c.key,c.label]));
-  h += `<div class="two">
-    <section class="panel"><div class="sec-h"><h2>점수 변경</h2></div><ul class="rows">${[...DATA.history].sort((a,b)=>b.date.localeCompare(a.date)).map(x=>`<li>
-      <div class="r-h"><a href="#wiki-${x.pf}">${x.pf}</a><span>${esc(lab[x.criterion])}</span><span>${f1(x.from)} → <b>${f1(x.to)}</b></span>${dlt(x.to-x.from)}<span style="color:var(--muted)">${x.date}</span></div>
-      <div class="r-t">${esc(x.rationale)}</div></li>`).join("")}</ul></section>
-    <section class="panel"><div class="sec-h"><h2>관찰 중 · 변경 보류</h2></div><ul class="rows">${DATA.watch.map(x=>`<li>
-      <div class="r-h"><a href="#wiki-${x.pf}">${x.pf}</a><span>${esc(lab[x.criterion])}</span><span class="pill p-warn">${DIR[x.direction][0]} 방향 관찰</span></div>
-      <div class="r-t">${esc(x.note)}</div></li>`).join("")}</ul></section>
-  </div>`;
-  h += `<section><div class="sec-h"><h2>최근 신호</h2><a href="#signals">전체 ${S.length}건</a></div><div class="ledger">${S.slice().sort((a,b)=>b.published.localeCompare(a.published)).slice(0,6).map(sigCard).join("")}</div></section>`;
-  $("v-home").innerHTML=h;
+function overview(target){
+  const src=DATA.wiki["Portfolio"]||"";
+  const v=$("v-overview");
+  if(!v.dataset.ready){
+    v.innerHTML=`<div class="wiki ov"><nav class="toc" id="ov-toc" aria-label="장 목차"></nav><article class="doc ovdoc" id="ov-doc">${md(src)}</article></div>`;
+    const hs=[...v.querySelectorAll(".ovdoc h2")];
+    hs.forEach((h,i)=>h.id="ch-"+(i+1));
+    $("ov-toc").innerHTML=`<div class="grp">개요 · 목차</div>`+hs.map((h,i)=>`<a href="#ch-${i+1}" data-ch="ch-${i+1}">${esc(h.textContent)}</a>`).join("")+
+      `<div class="grp">더 보기</div><a href="#wiki-PF-01">Thesis 위키 9개</a><a href="#signals">신호 레이더 · ${DATA.signals.length}건</a><a href="#digest">다이제스트</a>`;
+    v.dataset.ready="1";
+  }
+  document.querySelectorAll("#ov-toc a[data-ch]").forEach(a=>a.setAttribute("aria-current", a.dataset.ch===target?"page":"false"));
+  if(target){ const el=$(target); if(el) el.scrollIntoView({block:"start"}); } else window.scrollTo(0,0);
 }
 
 /* ---------- signals ---------- */
@@ -320,7 +329,7 @@ function wikiView(page){
   const key = SLUG_IDX[page] || page;
   const src = DATA.wiki[key];
   const toc = `<nav class="toc" aria-label="위키 목차">
-    <div class="grp">개요</div><a href="#wiki-Portfolio" ${page==="Portfolio"?'aria-current="page"':""}><span>ALL</span>포트폴리오</a>
+    <div class="grp">개요</div><a href="#overview"><span>ALL</span>개요로 돌아가기</a>
     <div class="grp">Thesis</div>${PF_IDS.map(p=>`<a href="#wiki-${p}" ${page===p?'aria-current="page"':""}><span>${p}</span>${esc(DATA.thesis[p].name)}</a>`).join("")}
     <div class="grp">수요층 지수</div>${DATA.indices.map(n=>`<a href="#wiki-${IDX_SLUG[n]}" ${page===IDX_SLUG[n]?'aria-current="page"':""}><span>IDX</span>${esc(n)}</a>`).join("")}
   </nav>`;
@@ -356,17 +365,17 @@ document.addEventListener("keydown",e=>{ if(e.key==="Escape") $("drawer").hidden
 
 /* ---------- router ---------- */
 function route(){
-  if(!DATA){ $("v-home").innerHTML='<div class="empty">아직 빌드된 데이터가 없습니다. 첫 수집 후 이 페이지가 채워집니다.</div>'; return; }
+  if(!DATA){ $("v-overview").innerHTML='<div class="empty">아직 빌드된 데이터가 없습니다. 첫 수집 후 이 페이지가 채워집니다.</div>'; return; }
   $("gen").textContent=DATA.generated+" 갱신";
-  const h=(location.hash||"#home").slice(1);
-  const v=h.startsWith("wiki-")?"wiki":(["signals","digest"].includes(h)?h:"home");
-  ["home","wiki","signals","digest"].forEach(x=>$("v-"+x).hidden=x!==v);
-  document.querySelectorAll("nav a").forEach(a=>a.setAttribute("aria-current", a.dataset.v===v?"page":"false"));
-  if(v==="home") home();
+  let h=(location.hash||"#overview").slice(1);
+  if(h==="wiki-Portfolio") h="overview";
+  const v=h.startsWith("wiki-")?"wiki":(["signals","digest"].includes(h)?h:"overview");
+  ["overview","wiki","signals","digest"].forEach(x=>$("v-"+x).hidden=x!==v);
+  document.querySelectorAll("header nav a").forEach(a=>a.setAttribute("aria-current", a.dataset.v===v?"page":"false"));
+  if(v==="overview") overview(h.startsWith("ch-")?h:null);
   else if(v==="wiki") wikiView(h.slice(5));
-  else if(v==="signals") signalsView();
-  else digestView();
-  if(v!=="wiki") window.scrollTo(0,0);
+  else if(v==="signals"){ signalsView(); window.scrollTo(0,0); }
+  else { digestView(); window.scrollTo(0,0); }
 }
 window.addEventListener("hashchange",route);
 route();

@@ -9,11 +9,12 @@
 | 신호 | `signals/YYYY-MM/SIG-*.md` | 근거의 최소 단위 (출처 1건 = 노트 1개) | Claude |
 | 위키 | `wiki/PF-*.md`, `wiki/Portfolio.md` | Thesis 정의·맥락·근거·경쟁·반증 조건 — **단일 진실원** | Claude (AUTO 블록 제외) |
 | 점수 원장 | `data/scores.json` | 기준선·현재 점수, 변경 이력, 관찰 목록 | Claude |
+| 결정 질문 | `data/decisions.json` | 답에 따라 Thesis 위치·추진 방식이 바뀌는 질문 | Claude (결정은 사용자) |
 | 지수 | `indices/*.md` | Korea Futures Lab 수요층 지수 4개 | Claude |
 | 다이제스트 | `digests/YYYY-MM-DD.md` | 회차별 요약 | Claude |
 | 산출물 | `data/signals.json`, `dashboard/dist.html` | 빌드 결과 (직접 수정 금지) | `scripts/build_index.py` |
 
-- 위키의 `<!-- AUTO:SCORE -->`, `<!-- AUTO:LOG -->`, `<!-- AUTO:SOURCES -->`, `<!-- AUTO:PORTFOLIO -->` 블록은 빌드가 다시 쓴다. **손으로 고치지 않는다.**
+- 위키의 `<!-- AUTO:... -->` 블록(SCORE·LOG·SOURCES·PORTFOLIO·SNAPSHOT·CHANGES·DECISIONS·LATEST)은 빌드가 다시 쓴다. **손으로 고치지 않는다.** `<!-- VIZ:... -->` 표시는 포털이 그림으로 바꾸는 자리이므로 지우지 않는다.
 - 신호 → 위키 → 점수 → 다이제스트 → 빌드 순서가 한 회차의 한 묶음이다. 신호만 쌓고 위키를 안 고치면 회차가 끝난 것이 아니다.
 
 ## 1. 맥락 읽기
@@ -67,7 +68,28 @@
 6. **frontmatter** — `updated`를 오늘로, `conviction`을 최근 2회차 순방향(강화 strength 합 − 약화 strength 합)으로: +3 이상 "상승", −3 이하 "하락", 그 사이 "유지".
 7. **변경 이력** — 맨 아래에 `- YYYY-MM-DD: 신호 N건(강화 a·약화 b). 점수 변경 … / 관찰 …` 한 줄. 포털의 업데이트 피드가 이 줄을 읽는다.
 
-여러 Thesis에 걸친 패턴이 보이면 `wiki/Portfolio.md`의 "공통 패턴"과 "지금 판단을 바꿀 수 있는 논점"을 고친다. 지수에 관한 새 통계는 `indices/*.md`의 관측 변수 아래에 날짜와 함께 기록한다.
+### 개요 페이지(`wiki/Portfolio.md`) — 공유용 랜딩 페이지
+
+포털의 첫 화면이며 처음 보는 사람이 읽는 문서다. 장마다 갱신 권한이 다르다.
+
+| 장 | 내용 | 정기 실행에서 |
+|---|---|---|
+| 맨 위 요약, 1~4장 | 출발 질문, 경쟁 층위, 방법론, 9개 Thesis와 Stack | **고치지 않는다.** 사용자가 대화에서 승인한 경우에만 수정 |
+| 5장 | 평가 기준과 현재 점수 | 서술은 고치지 않는다. 표·지도는 빌드가 자동 갱신 |
+| 6장 | 9월 이후 무엇이 바뀌었나 | 표는 자동. "반복해서 보이는 패턴"은 여러 Thesis에 걸친 새 패턴이 확인될 때 고치거나 추가 (패턴당 굵은 제목 한 줄 + 설명 + 근거 링크) |
+| 7장 | 결정이 필요한 질문 | `data/decisions.json`을 고치면 빌드가 자동 반영 |
+| 8장 | 최근 회차 | 자동 (최신 다이제스트의 핵심 3가지) |
+
+글은 처음 보는 사람 기준으로 쉽게 쓴다. 약어·내부 용어는 처음 나올 때 풀어 쓰고, 서술 문단과 표·목록을 섞는다.
+
+### 결정이 필요한 질문 (`data/decisions.json`)
+
+"답에 따라 Thesis의 위치나 추진 방식이 바뀌는 질문"을 관리한다. 항목: `id, pf, question, why, options, watch_signals, evidence, owner, due, status(open|closed)`.
+- 매 회차, 새 신호가 `watch_signals`에 해당하면 그 신호 ID를 `evidence`에 추가하고, 필요하면 `why`를 현재 상황에 맞게 고친다.
+- 관찰 목록이나 반증 조건에서 "한 가지 판단이 사분면·추진 방식을 바꾸는" 상황이 새로 생기면 질문을 추가한다. 질문은 예/아니오 또는 A/B로 답할 수 있는 형태로 쓴다.
+- 사용자가 결정을 알려주면 `status`를 `closed`로 바꾸고 `decision` 필드에 결정 내용과 날짜를 적는다. 닫힌 질문은 개요에 표시되지 않는다.
+
+지수에 관한 새 통계는 `indices/*.md`의 관측 변수 아래에 날짜와 함께 기록한다.
 
 ## 6. 점수 갱신 규칙 (`data/scores.json`)
 
