@@ -133,6 +133,7 @@ h1,h2,h3{text-wrap:balance}
 .doc ol li,.doc ul li{margin:4px 0}
 .wl{font-family:var(--f-mono);font-size:.82em;text-decoration:none;background:var(--accent-soft);padding:0 5px;border-radius:3px;white-space:nowrap}
 .doc-head{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin-bottom:12px;font-family:var(--f-mono);font-size:.78rem;color:var(--muted)}
+.doc-head a{color:var(--accent,inherit);text-decoration:none;font-weight:500}.doc-head a:hover{text-decoration:underline}
 /* overview */
 .ovdoc{padding:28px 34px}
 .ovdoc h1{font-size:1.75rem;letter-spacing:-.015em;margin-bottom:10px}
@@ -334,15 +335,18 @@ function renderLedger(){
 function wikiView(page){
   const key = SLUG_IDX[page] || page;
   const src = DATA.wiki[key];
+  const parent = key.endsWith("-study") ? key.slice(0,-6) : key;
   const toc = `<nav class="toc" aria-label="위키 목차">
-    <div class="grp">Thesis</div>${PF_IDS.map(p=>`<a href="#wiki-${p}" ${page===p?'aria-current="page"':""}><span>${p}</span>${esc(DATA.thesis[p].name)}</a>`).join("")}
+    <div class="grp">Thesis</div>${PF_IDS.map(p=>`<a href="#wiki-${p}" ${parent===p?'aria-current="page"':""}><span>${p}</span>${esc(DATA.thesis[p].name)}</a>`).join("")}
     <div class="grp">수요층 지수</div>${DATA.indices.map(n=>`<a href="#wiki-${IDX_SLUG[n]}" ${page===IDX_SLUG[n]?'aria-current="page"':""}><span>IDX</span>${esc(n)}</a>`).join("")}
     ${APPX.length?`<div class="grp">개요 부록</div>`+APPX.map(([k,n])=>`<a href="#wiki-${k}" ${page===k?'aria-current="page"':""}><span>APX</span>${esc(n.replace(/^부록 [A-Z]\. /,""))}</a>`).join(""):""}
   </nav>`;
   let head="";
   if(DATA.thesis[key]){
     const t=DATA.thesis[key], c=t.calc.current;
-    head=`<div class="doc-head"><span class="qchip" style="color:${QC[c.quadrant]}">${esc(c.quadrant)}</span><span>총점 ${f1(c.total)} ${dlt(c.total-t.calc.baseline.total)}</span><span>Stack ${esc(t.stack)}</span><span>확신도 ${esc(t.conviction)}</span><span>갱신 ${esc(t.updated)}</span><span>출처 ${t.signal_count}건</span></div>`;
+    head=`<div class="doc-head"><span class="qchip" style="color:${QC[c.quadrant]}">${esc(c.quadrant)}</span><span>총점 ${f1(c.total)} ${dlt(c.total-t.calc.baseline.total)}</span><span>Stack ${esc(t.stack)}</span><span>확신도 ${esc(t.conviction)}</span><span>갱신 ${esc(t.updated)}</span><span>출처 ${t.signal_count}건</span>${DATA.wiki[key+"-study"]?`<a href="#wiki-${key}-study">심층 분석 →</a>`:""}</div>`;
+  } else if (key.endsWith("-study") && DATA.thesis[parent]){
+    head=`<div class="doc-head"><a href="#wiki-${parent}">← ${parent} ${esc(DATA.thesis[parent].name)} 위키</a><span>Template v2 18항목</span></div>`;
   }
   $("v-wiki").innerHTML=`<div class="wiki">${toc}<article class="doc">${head}${src?md(src):'<div class="empty">문서를 찾을 수 없습니다.</div>'}</article></div>`;
   window.scrollTo(0,0);

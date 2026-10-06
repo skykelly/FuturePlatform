@@ -333,7 +333,16 @@ def main():
             for d in sorted(closed_d, key=lambda x: x["id"]):
                 dl.append(f"| {d['id']} | {d['question']} | {d.get('decision', '')} | "
                           f"{' '.join('[['+p+']]' for p in d['pf'])} | {d.get('decided', '')} |")
-        text = replace_block(text, "DECISIONS", "\n".join(dl)) or text
+        apc = ROOT / "wiki" / "Appendix-C.md"
+        if apc.exists():
+            at = apc.read_text(encoding="utf-8")
+            ar = replace_block(at, "DECISIONS", "\n".join(dl))
+            if ar is None:
+                errors.append("Appendix-C.md: AUTO:DECISIONS 블록 없음")
+            elif ar != at:
+                apc.write_text(ar, encoding="utf-8")
+        else:
+            errors.append("wiki/Appendix-C.md 없음 (의사결정 사항 문서)")
 
         # LATEST
         if digests:
@@ -407,6 +416,11 @@ def main():
         meta, _, text = read_note(p)
         wiki_md[meta.get("id", p.stem)] = text
 
+    # thesis study sub-documents (for portal reader)
+    for p in sorted((ROOT / "wiki" / "study").glob("*.md")):
+        meta, _, text = read_note(p)
+        wiki_md[meta.get("id", p.stem)] = text
+
     # index notes (for portal reader)
     for p in sorted((ROOT / "indices").glob("*.md")):
         meta, _, text = read_note(p)
@@ -415,7 +429,7 @@ def main():
     # wiki change logs → update feed
     feed = []
     for pf, md in wiki_md.items():
-        if not pf.startswith("PF-") and pf != "Portfolio":
+        if (not pf.startswith("PF-") and pf != "Portfolio") or pf.endswith("-study"):
             continue
         _, body, _ = read_note(ROOT / "wiki" / f"{pf}.md")
         for line in section(body, "변경 이력").splitlines():

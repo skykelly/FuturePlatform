@@ -8,6 +8,7 @@
 |---|---|---|---|
 | 신호 | `signals/YYYY-MM/SIG-*.md` | 근거의 최소 단위 (출처 1건 = 노트 1개) | Claude |
 | 위키 | `wiki/PF-*.md`, `wiki/Portfolio.md` | Thesis 정의·맥락·근거·경쟁·반증 조건 — **단일 진실원** | Claude (AUTO 블록 제외) |
+| 부속 문서 | `wiki/Appendix-A~C.md`, `wiki/study/PF-*-study.md` | 개요 부록(검토 방법·용어·의사결정 사항), Thesis 심층 분석(Template v2 18항목) | Claude (AUTO 블록 제외) |
 | 점수 원장 | `data/scores.json` | 기준선·현재 점수, 변경 이력, 관찰 목록 | Claude |
 | 결정 질문 | `data/decisions.json` | 답에 따라 Thesis 위치·추진 방식이 바뀌는 질문 | Claude (결정은 사용자) |
 | 지수 | `indices/*.md` | Korea Futures Lab 수요층 지수 4개 (정의·해석) | Claude (AUTO 블록 제외) |
@@ -68,6 +69,7 @@
 5. **섹션 4 해석** — 점수가 바뀌었거나 관찰이 추가·해제되면 해석 문단을 다시 쓴다.
 6. **frontmatter** — `updated`를 오늘로, `conviction`을 최근 2회차 순방향(강화 strength 합 − 약화 strength 합)으로: +3 이상 "상승", −3 이하 "하락", 그 사이 "유지".
 7. **변경 이력** — 맨 아래에 `- YYYY-MM-DD: 신호 N건(강화 a·약화 b). 점수 변경 … / 관찰 …` 한 줄. 포털의 업데이트 피드가 이 줄을 읽는다.
+8. **심층 분석 문서** — `wiki/study/PF-*-study.md`가 있는 Thesis는 점수·사분면이 바뀌었을 때만 관련 항목을 고친다.
 
 ### 개요 페이지(`wiki/Portfolio.md`) — 공유용 랜딩 페이지
 
@@ -79,13 +81,13 @@
 | 3장 | 평가 기준과 점수 | 서술은 고치지 않는다. 표·지도는 빌드가 자동 갱신 |
 | 4장 | 9월 평가 이후 변화 | 표는 자동. "주요 시사점"은 여러 기회에 걸친 새 패턴이 확인될 때 고치거나 추가 |
 | 5장 | 수요 환경 | 지수 추세가 바뀌면 표의 "현재 추세" 칸을 갱신 |
-| 6장 | 의사결정 사항 (대기·완료) | `data/decisions.json`을 고치면 빌드가 자동 반영 |
-| 7장 | 최근 점검 결과 | 자동 (최신 다이제스트의 핵심 3가지) |
+| 6장 | 최근 점검 결과 | 자동 (최신 다이제스트의 핵심 3가지) |
+| 부록 C | 의사결정 사항 (`wiki/Appendix-C.md`, 대기·완료) | `data/decisions.json`을 고치면 빌드가 자동 반영. 새 결정 질문은 여기서 관리 |
 
 이 페이지는 경영진 보고 자료다. 문장은 짧은 보고체("~습니다", 개조식은 명사형)로 쓰고, 줄표(—)로 문장을 잇지 않으며, 비유·수사·과장 표현을 쓰지 않는다. 약어와 내부 용어는 처음 나올 때 풀어 쓴다. 다이제스트의 "이번 회차 핵심 3가지"도 이 페이지에 그대로 실리므로 같은 문체로 쓴다.
 
 
-### 결정이 필요한 질문 (`data/decisions.json`)
+### 결정이 필요한 질문 (`data/decisions.json` → 부록 C)
 
 "답에 따라 Thesis의 위치나 추진 방식이 바뀌는 질문"을 관리한다. 항목: `id, pf, question, why, options, watch_signals, evidence, owner, due, status(open|closed)`.
 - 매 회차, 새 신호가 `watch_signals`에 해당하면 그 신호 ID를 `evidence`에 추가하고, 필요하면 `why`를 현재 상황에 맞게 고친다.
