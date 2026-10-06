@@ -1,32 +1,42 @@
-# FuturePlatform Signal Tracker
+# FuturePlatform
 
-미래 소비자 변화(Korea Futures Lab)와 LG Future Platform Thesis(PF-01~09)를 **살아있는 가설**로 관리하기 위한 신호 저장소입니다.
-
-- 신호 하나 = 마크다운 노트 하나 (`signals/YYYY-MM/`)
-- 노트는 `[[PF-xx]]`, `[[지수명]]` 링크로 Thesis·지수 노트와 연결 → Obsidian 그래프 뷰가 곧 **신호–지수–Thesis 온톨로지**
-- `scripts/build_index.py`가 노트를 읽어 `data/signals.json`과 대시보드(`dashboard/dist.html`)를 생성
-- 격주 화요일 정기 작업이 수집 → 노트 작성 → 다이제스트 → 인덱스 빌드 → 커밋 → 대시보드 갱신
-
-## 폴더 구조
+LG Future Platform Thesis 9개(PF-01~09)를 **살아있는 가설**로 운영하는 LLM-wiki.
+국내외 뉴스 레이더가 격주로 신호를 모으면, 위키 문서·스코어·포털이 한 번에 갱신된다.
 
 ```
-thesis/      PF-01~09 Thesis 노트 (Control Point, 관찰 키워드, 강화·약화 신호 기준)
-indices/     Korea Futures Lab 잠재 지수 4개 (시간빈곤·공간제약·가사외주화·돌봄부담)
-signals/     신호 노트 (월별 폴더)
-digests/     격주 다이제스트, 월간 롤업, 분기 2x2 검토
-templates/   신호 노트 템플릿
-data/        signals.json (빌드 산출물)
-dashboard/   대시보드 템플릿과 빌드 결과
-scripts/     인덱스·대시보드 빌드 스크립트
-sources.md   수집 소스 목록
-CLAUDE.md    정기 수집 실행 지침
+ 레이더 수집 ─▶ signals/  (출처 1건 = 노트 1개, tier·criteria·방향·강도)
+                   │
+                   ▼
+            wiki/PF-*.md  (정의·맥락·Evidence·경쟁·반증 조건 — 단일 진실원)
+                   │
+                   ▼
+           data/scores.json  (기준선·현재·변경 이력·관찰 목록)
+                   │
+                   ▼
+     scripts/build_index.py  ─▶ 위키 AUTO 블록 · data/signals.json · dashboard/dist.html(포털)
 ```
 
-## Obsidian에서 쓰기
+## 폴더
 
-1. 이 저장소를 로컬에 clone한 뒤 Obsidian에서 폴더를 Vault로 엽니다.
-2. Obsidian Git 플러그인으로 주기적 pull을 설정하면 새 신호가 자동으로 들어옵니다.
-3. 그래프 뷰에서 `path:thesis OR path:indices`를 그룹 색으로 지정하면 허브 구조가 잘 보입니다.
+| 경로 | 내용 |
+|---|---|
+| `wiki/Portfolio.md` | 9개 Thesis 개요, 사분면 표, 공통 패턴, 핵심 논점 |
+| `wiki/PF-01.md` ~ `PF-09.md` | Thesis별 LLM-wiki — 정의, 왜 지금인가, LG 비대칭 자산, 스코어, Evidence, 경쟁 지형, 반증 조건, 관찰 지표, Wedge→2030, Sources |
+| `indices/` | Korea Futures Lab 수요층 지수 4개 |
+| `signals/` | 신호 노트 |
+| `digests/` | 회차별 다이제스트 |
+| `data/scores.json` | 8대 기준 점수 원장 (기준선 2026-09-13) |
+| `dashboard/template.html` | 포털 템플릿 — 빌드가 `dist.html`로 데이터를 주입 |
+| `CLAUDE.md` | 정기 실행 지침 (수집·위키 갱신·점수 규칙·빌드·게시) |
+| `sources.md` | 소스 목록과 레이더 운영 규칙 |
+
+## 포털
+
+빌드 결과 `dashboard/dist.html`이 Claude 아티팩트로 게시된다. 홈(이번 회차, 포트폴리오 지도, Thesis 카드, 점수 변경·관찰, 최근 신호), Thesis 위키 리더, 신호 레이더, 다이제스트로 구성된다.
+
+## Obsidian
+
+저장소를 Vault로 열면 `[[PF-xx]]`, `[[SIG-...]]`, `[[지수명]]` 링크로 신호–Thesis–지수 그래프가 보인다. Obsidian Git 자동 pull을 켜두면 정기 수집 결과가 그대로 들어온다. 위키의 `<!-- AUTO:... -->` 블록은 빌드가 다시 쓰므로 그 안은 편집하지 않는다.
 
 ## 로컬 빌드
 
