@@ -207,6 +207,7 @@ const SLUG_IDX = Object.fromEntries(Object.entries(IDX_SLUG).map(([k,v])=>[v,k])
 
 function md(src){
   let s = src.replace(/^---\n[\s\S]*?\n---\n?/, "").replace(/<!-- \/?AUTO:[A-Z]+ -->/g, "");
+  s = s.replace(/(?<!~)~(?!~)/g, "\\~");  // 단일 물결표는 범위 표기: 취소선으로 렌더링되지 않게
   s = s.replace(/\[\[([^\]]+)\]\]/g, (m, k) => {
     let label = null;
     const pi = k.search(/\\?\|/);
