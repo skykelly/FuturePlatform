@@ -9,7 +9,7 @@ updated: 2026-10-06
 > AI 에이전트가 고객 대신 판단하고 실행하는 시대에, LG전자가 Google·Amazon·Naver와 **다른 방식으로** 플랫폼 기업이 될 수 있는 9개의 자리(Platform Thesis)와, 그 가설이 실제 세계에서 어떻게 검증되고 있는지를 추적하는 문서입니다.
 
 <!-- AUTO:SNAPSHOT -->
-> **현재 상태** · 2026-10-06 갱신 · 신호 47건 (컨설팅·투자은행 5건) · 9월 평가 이후 점수 변경 8건 · 관찰 중 4건 · 결정이 필요한 질문 5건
+> **현재 상태** · 2026-10-06 갱신 · 신호 49건 (컨설팅·투자은행 5건) · 9월 평가 이후 점수 변경 8건 · 관찰 중 4건 · 결정이 필요한 질문 5건
 <!-- /AUTO:SNAPSHOT -->
 
 ### 한눈에 보는 세 가지 결론
@@ -288,15 +288,15 @@ HVAC를 중심에 두고 가전·디스플레이·로봇·정비를 묶어, 설�
 <!-- AUTO:PORTFOLIO -->
 | PF | Thesis | 총점 | 변화 | 사분면 | X | Y | 신호 (강화/약화) | 확신도 |
 |---|---|:-:|:-:|---|:-:|:-:|:-:|:-:|
-| [[PF-06]] | Robot Operations (로봇 운영) | **36.0** | +1.0 | Strategic Core | 9.0 | 8.5 | 9 / 0 | 상승 |
+| [[PF-06]] | Robot Operations (로봇 운영) | **36.0** | +1.0 | Strategic Core | 9.0 | 8.5 | 10 / 0 | 상승 |
 | [[PF-04]] | Ambient AI Distribution (앰비언트 AI 유통) | **35.5** | −0.5 | Strategic Core | 9.0 | 10.0 | 4 / 4 | 하락 |
-| [[PF-01]] | Household CFO (가계 구매 위임) | **34.5** | −0.5 | Moonshots | 7.0 | 9.5 | 4 / 3 | 하락 |
+| [[PF-01]] | Household CFO (가계 구매 위임) | **34.5** | −0.5 | Moonshots | 7.0 | 9.5 | 5 / 3 | 하락 |
 | [[PF-02]] | Physical Environment Runtime (물리 환경 런타임) | **34.5** | – | Moonshots | 7.5 | 9.5 | 8 / 2 | 유지 |
 | [[PF-03]] | Autonomous Space OS (자율 공간 운영 OS) | **34.0** | – | Moonshots | 7.5 | 8.5 | 4 / 2 | 유지 |
 | [[PF-05]] | Flexible Energy Network (유연 에너지 네트워크) | **33.5** | – | Strategic Core | 8.0 | 8.5 | 6 / 1 | 유지 |
-| [[PF-07]] | Home Diagnostics (집 상태 진단) | **32.5** | +0.5 | Quick Wins | 9.0 | 7.5 | 8 / 1 | 상승 |
+| [[PF-07]] | Home Diagnostics (집 상태 진단) | **32.5** | +0.5 | Quick Wins | 9.0 | 7.5 | 9 / 1 | 상승 |
 | [[PF-09]] | Second Life Exchange (중고 가전 상태 인증) | **28.5** | +0.5 | Hedge & Defense | 7.5 | 5.5 | 5 / 0 | 유지 |
-| [[PF-08]] | Independent Living (고령 독립생활) | **26.0** | +1.0 | Hedge & Defense | 7.0 | 4.5 | 7 / 0 | 상승 |
+| [[PF-08]] | Independent Living (고령 독립생활) | **26.0** | +1.0 | Hedge & Defense | 7.0 | 4.5 | 9 / 0 | 상승 |
 <!-- /AUTO:PORTFOLIO -->
 
 **읽는 법.** 총점과 사분면은 서로 다른 질문에 답한다.

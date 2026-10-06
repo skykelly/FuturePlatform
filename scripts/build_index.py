@@ -355,6 +355,43 @@ def main():
                 port.write_text(r, encoding="utf-8")
             wiki_md["Portfolio"] = r
 
+    # indicators → indices AUTO:INDICATORS
+    ipath = ROOT / "data" / "indicators.json"
+    indicators = json.loads(ipath.read_text(encoding="utf-8")) if ipath.exists() else []
+    for it in indicators:
+        if it["index"] not in indices:
+            errors.append(f"indicator '{it['label']}': 알 수 없는 지수 {it['index']}")
+    def num(v):
+        return f"{v:g}" if isinstance(v, (int, float)) else "–"
+    for p in sorted((ROOT / "indices").glob("*.md")):
+        meta, _, text = read_note(p)
+        mine = [i for i in indicators if i["index"] == meta["name"]]
+        up = down = na = 0
+        rows = ["| 변수 | 최신값 | 이전값 | 지수 영향 | 출처 · 갱신 주기 |", "|---|:-:|:-:|:-:|---|"]
+        for i in mine:
+            cur = f"**{num(i['value'])}{i['unit']}** ({i['as_of']})"
+            prev = f"{num(i['prev_value'])}{i['unit']} ({i['prev_as_of']})" if i.get("prev_value") is not None else "–"
+            if i.get("prev_value") is None:
+                eff = "비교값 없음"; na += 1
+            else:
+                d = i["value"] - i["prev_value"]
+                rising = (d > 0 and i["raises_index_when"] == "up") or (d < 0 and i["raises_index_when"] == "down")
+                if abs(d) < 1e-9:
+                    eff = "변화 없음"; na += 1
+                elif rising:
+                    eff = "▲ 상승 요인"; up += 1
+                else:
+                    eff = "▼ 하락 요인"; down += 1
+            note = f"<br><small>{i['note']}</small>" if i.get("note") else ""
+            rows.append(f"| {i['label']}{note} | {cur} | {prev} | {eff} | [{i['source']}]({i['url']}) · {i['cadence']} |")
+        head = (f"변수 {len(mine)}개 — 이전값 대비 지수 상승 요인 {up}개 · 하락 요인 {down}개 · 비교값 없음/변화 없음 {na}개. "
+                f"원장: `data/indicators.json`")
+        r = replace_block(text, "INDICATORS", head + "\n\n" + "\n".join(rows))
+        if r is None:
+            errors.append(f"{p.name}: AUTO:INDICATORS 블록 없음")
+        elif r != text:
+            p.write_text(r, encoding="utf-8")
+
     # index notes (for portal reader)
     for p in sorted((ROOT / "indices").glob("*.md")):
         meta, _, text = read_note(p)
@@ -390,6 +427,7 @@ def main():
         "wiki": wiki_md,
         "digests": digests,
         "decisions": decisions,
+        "indicators": indicators,
         "feed": feed,
     }
     (ROOT / "data" / "signals.json").write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")

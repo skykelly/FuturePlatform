@@ -10,7 +10,8 @@
 | 위키 | `wiki/PF-*.md`, `wiki/Portfolio.md` | Thesis 정의·맥락·근거·경쟁·반증 조건 — **단일 진실원** | Claude (AUTO 블록 제외) |
 | 점수 원장 | `data/scores.json` | 기준선·현재 점수, 변경 이력, 관찰 목록 | Claude |
 | 결정 질문 | `data/decisions.json` | 답에 따라 Thesis 위치·추진 방식이 바뀌는 질문 | Claude (결정은 사용자) |
-| 지수 | `indices/*.md` | Korea Futures Lab 수요층 지수 4개 | Claude |
+| 지수 | `indices/*.md` | Korea Futures Lab 수요층 지수 4개 (정의·해석) | Claude (AUTO 블록 제외) |
+| 지표 원장 | `data/indicators.json` | 지수별 관측 변수의 최신값·이전값·출처 | Claude |
 | 다이제스트 | `digests/YYYY-MM-DD.md` | 회차별 요약 | Claude |
 | 산출물 | `data/signals.json`, `dashboard/dist.html` | 빌드 결과 (직접 수정 금지) | `scripts/build_index.py` |
 
@@ -89,7 +90,14 @@
 - 관찰 목록이나 반증 조건에서 "한 가지 판단이 사분면·추진 방식을 바꾸는" 상황이 새로 생기면 질문을 추가한다. 질문은 예/아니오 또는 A/B로 답할 수 있는 형태로 쓴다.
 - 사용자가 결정을 알려주면 `status`를 `closed`로 바꾸고 `decision` 필드에 결정 내용과 날짜를 적는다. 닫힌 질문은 개요에 표시되지 않는다.
 
-지수에 관한 새 통계는 `indices/*.md`의 관측 변수 아래에 날짜와 함께 기록한다.
+### 수요층 지수와 지표 원장 (`data/indicators.json`)
+
+지수 노트의 관측 데이터 표는 `data/indicators.json`에서 자동 생성된다(`<!-- AUTO:INDICATORS -->`).
+- 새 공식 통계가 나오면 해당 항목의 `value`·`as_of`를 갱신하고, 기존 값을 `prev_value`·`prev_as_of`로 옮긴다. 새 변수는 항목을 추가한다 (`index, label, value, unit, as_of, prev_value, prev_as_of, raises_index_when(up|down), source, url, cadence, note`).
+- 이전값은 원문에 나온 값이나 원문의 증감으로 계산한 값만 쓴다. 기억이나 추정으로 채우지 않는다. 없으면 `null`.
+- 값이 바뀐 지수는 노트의 "지금 읽히는 방향"을 다시 쓰고, 변경 이력에 한 줄 남긴다. "아직 비어 있는 변수"를 채웠으면 그 줄을 지운다.
+- 주요 발표 시기: 고령자 통계(9~10월), 인구주택총조사(7월), 맞벌이 가구 통계(6월), 주거실태조사(연말), 생활시간조사(5년 주기, 다음 2029년). 해당 월의 회차에는 이 발표를 우선 검색한다.
+- 지수 통계가 특정 Thesis의 TAM·고객가치 판단을 바꿀 만하면 신호 노트로도 기록한다.
 
 ## 6. 점수 갱신 규칙 (`data/scores.json`)
 
