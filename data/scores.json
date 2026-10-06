@@ -1,17 +1,55 @@
 {
   "criteria": [
-    {"key": "tam", "label": "TAM", "desc": "대체·진입하려는 기존 시장의 크기와 성장성"},
-    {"key": "value", "label": "고객가치", "desc": "고객 페인포인트를 근본적으로 해결하는 강도"},
-    {"key": "rtw", "label": "LG 독점우위", "desc": "빅테크·삼성이 아닌 LG만의 물리·데이터 자산 우위 (Right-to-Win)"},
-    {"key": "network", "label": "네트워크 효과", "desc": "참여자가 늘수록 플랫폼 가치가 커지는 정도"},
-    {"key": "moat", "label": "데이터 해자", "desc": "시간이 갈수록 축적되어 복제 불가능해지는 데이터"},
-    {"key": "monetize", "label": "수익화", "desc": "구독·중개 수수료 등 반복 이윤 구조"},
-    {"key": "execution", "label": "실행 용이성", "desc": "조직 준비도, CAPEX, 기술 구현, 역물류 등 리스크 극복 난이도"},
-    {"key": "differentiation", "label": "전략적 차별성", "desc": "빅테크·산업 선도기업과의 정면 대결을 우회하는 전략성"}
+    {
+      "key": "tam",
+      "label": "TAM",
+      "desc": "대체·진입하려는 기존 시장의 크기와 성장성"
+    },
+    {
+      "key": "value",
+      "label": "고객가치",
+      "desc": "고객 페인포인트를 근본적으로 해결하는 강도"
+    },
+    {
+      "key": "rtw",
+      "label": "LG 독점우위",
+      "desc": "빅테크·삼성이 아닌 LG만의 물리·데이터 자산 우위 (Right-to-Win)"
+    },
+    {
+      "key": "network",
+      "label": "네트워크 효과",
+      "desc": "참여자가 늘수록 플랫폼 가치가 커지는 정도"
+    },
+    {
+      "key": "moat",
+      "label": "데이터 해자",
+      "desc": "시간이 갈수록 축적되어 복제 불가능해지는 데이터"
+    },
+    {
+      "key": "monetize",
+      "label": "수익화",
+      "desc": "구독·중개 수수료 등 반복 이윤 구조"
+    },
+    {
+      "key": "execution",
+      "label": "실행 용이성",
+      "desc": "조직 준비도, CAPEX, 기술 구현, 역물류 등 리스크 극복 난이도"
+    },
+    {
+      "key": "differentiation",
+      "label": "전략적 차별성",
+      "desc": "빅테크·산업 선도기업과의 정면 대결을 우회하는 전략성"
+    }
   ],
   "quadrant_rule": {
-    "x": ["rtw", "execution"],
-    "y": ["network", "tam"],
+    "x": [
+      "rtw",
+      "execution"
+    ],
+    "y": [
+      "network",
+      "tam"
+    ],
     "x_threshold": 8.0,
     "y_threshold": 8.0,
     "names": {
@@ -27,80 +65,360 @@
   },
   "pf": {
     "PF-01": {
-      "baseline": {"tam": 5.0, "value": 5.0, "rtw": 4.5, "network": 4.5, "moat": 4.5, "monetize": 4.0, "execution": 3.0, "differentiation": 4.5},
-      "current":  {"tam": 5.0, "value": 5.0, "rtw": 4.0, "network": 4.5, "moat": 4.5, "monetize": 4.0, "execution": 3.0, "differentiation": 4.5}
+      "baseline": {
+        "tam": 5.0,
+        "value": 5.0,
+        "rtw": 4.5,
+        "network": 4.5,
+        "moat": 4.5,
+        "monetize": 4.0,
+        "execution": 3.0,
+        "differentiation": 4.5
+      },
+      "current": {
+        "tam": 5.0,
+        "value": 5.0,
+        "rtw": 4.0,
+        "network": 4.5,
+        "moat": 4.5,
+        "monetize": 4.0,
+        "execution": 3.0,
+        "differentiation": 4.5
+      }
     },
     "PF-02": {
-      "baseline": {"tam": 5.0, "value": 5.0, "rtw": 4.5, "network": 4.5, "moat": 5.0, "monetize": 2.5, "execution": 3.0, "differentiation": 5.0},
-      "current":  {"tam": 5.0, "value": 5.0, "rtw": 4.5, "network": 4.5, "moat": 5.0, "monetize": 2.5, "execution": 3.0, "differentiation": 5.0}
+      "baseline": {
+        "tam": 5.0,
+        "value": 5.0,
+        "rtw": 4.5,
+        "network": 4.5,
+        "moat": 5.0,
+        "monetize": 2.5,
+        "execution": 3.0,
+        "differentiation": 5.0
+      },
+      "current": {
+        "tam": 5.0,
+        "value": 5.0,
+        "rtw": 4.5,
+        "network": 4.5,
+        "moat": 5.0,
+        "monetize": 2.5,
+        "execution": 3.0,
+        "differentiation": 5.0
+      }
     },
     "PF-03": {
-      "baseline": {"tam": 5.0, "value": 4.5, "rtw": 4.0, "network": 3.5, "moat": 4.0, "monetize": 4.5, "execution": 3.5, "differentiation": 5.0},
-      "current":  {"tam": 5.0, "value": 4.5, "rtw": 4.0, "network": 3.5, "moat": 4.0, "monetize": 4.5, "execution": 3.5, "differentiation": 5.0}
+      "baseline": {
+        "tam": 5.0,
+        "value": 4.5,
+        "rtw": 4.0,
+        "network": 3.5,
+        "moat": 4.0,
+        "monetize": 4.5,
+        "execution": 3.5,
+        "differentiation": 5.0
+      },
+      "current": {
+        "tam": 5.0,
+        "value": 4.5,
+        "rtw": 4.0,
+        "network": 3.5,
+        "moat": 4.0,
+        "monetize": 4.5,
+        "execution": 3.5,
+        "differentiation": 5.0
+      }
     },
     "PF-04": {
-      "baseline": {"tam": 5.0, "value": 4.5, "rtw": 4.5, "network": 5.0, "moat": 4.0, "monetize": 4.5, "execution": 4.5, "differentiation": 4.0},
-      "current":  {"tam": 5.0, "value": 4.5, "rtw": 4.5, "network": 5.0, "moat": 4.0, "monetize": 4.5, "execution": 4.5, "differentiation": 3.5}
+      "baseline": {
+        "tam": 5.0,
+        "value": 4.5,
+        "rtw": 4.5,
+        "network": 5.0,
+        "moat": 4.0,
+        "monetize": 4.5,
+        "execution": 4.5,
+        "differentiation": 4.0
+      },
+      "current": {
+        "tam": 5.0,
+        "value": 4.5,
+        "rtw": 4.5,
+        "network": 5.0,
+        "moat": 4.0,
+        "monetize": 4.5,
+        "execution": 4.5,
+        "differentiation": 3.5
+      }
     },
     "PF-05": {
-      "baseline": {"tam": 4.5, "value": 4.5, "rtw": 4.0, "network": 4.0, "moat": 4.0, "monetize": 3.5, "execution": 4.0, "differentiation": 5.0},
-      "current":  {"tam": 4.5, "value": 4.5, "rtw": 4.0, "network": 4.0, "moat": 4.0, "monetize": 3.5, "execution": 4.0, "differentiation": 5.0}
+      "baseline": {
+        "tam": 4.5,
+        "value": 4.5,
+        "rtw": 4.0,
+        "network": 4.0,
+        "moat": 4.0,
+        "monetize": 3.5,
+        "execution": 4.0,
+        "differentiation": 5.0
+      },
+      "current": {
+        "tam": 4.5,
+        "value": 4.5,
+        "rtw": 4.0,
+        "network": 4.0,
+        "moat": 4.0,
+        "monetize": 3.5,
+        "execution": 4.0,
+        "differentiation": 5.0
+      }
     },
     "PF-06": {
-      "baseline": {"tam": 4.5, "value": 4.5, "rtw": 4.5, "network": 3.5, "moat": 5.0, "monetize": 4.5, "execution": 4.0, "differentiation": 4.5},
-      "current":  {"tam": 5.0, "value": 4.5, "rtw": 4.5, "network": 3.5, "moat": 5.0, "monetize": 4.5, "execution": 4.5, "differentiation": 4.5}
+      "baseline": {
+        "tam": 4.5,
+        "value": 4.5,
+        "rtw": 4.5,
+        "network": 3.5,
+        "moat": 5.0,
+        "monetize": 4.5,
+        "execution": 4.0,
+        "differentiation": 4.5
+      },
+      "current": {
+        "tam": 5.0,
+        "value": 4.5,
+        "rtw": 4.5,
+        "network": 3.5,
+        "moat": 5.0,
+        "monetize": 4.5,
+        "execution": 4.5,
+        "differentiation": 4.5
+      }
     },
     "PF-07": {
-      "baseline": {"tam": 4.0, "value": 4.0, "rtw": 4.5, "network": 3.0, "moat": 4.0, "monetize": 4.0, "execution": 4.5, "differentiation": 4.0},
-      "current":  {"tam": 4.5, "value": 4.0, "rtw": 4.5, "network": 3.0, "moat": 4.0, "monetize": 4.0, "execution": 4.5, "differentiation": 4.0}
+      "baseline": {
+        "tam": 4.0,
+        "value": 4.0,
+        "rtw": 4.5,
+        "network": 3.0,
+        "moat": 4.0,
+        "monetize": 4.0,
+        "execution": 4.5,
+        "differentiation": 4.0
+      },
+      "current": {
+        "tam": 4.5,
+        "value": 4.0,
+        "rtw": 4.5,
+        "network": 3.0,
+        "moat": 4.0,
+        "monetize": 4.0,
+        "execution": 4.5,
+        "differentiation": 4.0
+      }
     },
     "PF-08": {
-      "baseline": {"tam": 2.0, "value": 4.0, "rtw": 4.5, "network": 2.0, "moat": 4.0, "monetize": 2.0, "execution": 2.5, "differentiation": 4.0},
-      "current":  {"tam": 2.5, "value": 4.0, "rtw": 4.5, "network": 2.0, "moat": 4.0, "monetize": 2.5, "execution": 2.5, "differentiation": 4.0}
+      "baseline": {
+        "tam": 2.0,
+        "value": 4.0,
+        "rtw": 4.5,
+        "network": 2.0,
+        "moat": 4.0,
+        "monetize": 2.0,
+        "execution": 2.5,
+        "differentiation": 4.0
+      },
+      "current": {
+        "tam": 2.5,
+        "value": 4.0,
+        "rtw": 4.5,
+        "network": 2.0,
+        "moat": 4.0,
+        "monetize": 2.5,
+        "execution": 2.5,
+        "differentiation": 4.0
+      }
     },
     "PF-09": {
-      "baseline": {"tam": 2.5, "value": 4.0, "rtw": 4.5, "network": 3.0, "moat": 4.0, "monetize": 3.0, "execution": 2.5, "differentiation": 4.5},
-      "current":  {"tam": 2.5, "value": 4.0, "rtw": 4.5, "network": 3.0, "moat": 4.0, "monetize": 3.0, "execution": 3.0, "differentiation": 4.5}
+      "baseline": {
+        "tam": 2.5,
+        "value": 4.0,
+        "rtw": 4.5,
+        "network": 3.0,
+        "moat": 4.0,
+        "monetize": 3.0,
+        "execution": 2.5,
+        "differentiation": 4.5
+      },
+      "current": {
+        "tam": 2.5,
+        "value": 4.0,
+        "rtw": 4.5,
+        "network": 3.0,
+        "moat": 4.0,
+        "monetize": 3.0,
+        "execution": 3.0,
+        "differentiation": 4.5
+      }
     }
   },
   "history": [
-    {"date": "2026-10-06", "pf": "PF-01", "criterion": "rtw", "from": 4.5, "to": 4.0,
-     "signals": ["SIG-20261006-13", "SIG-20261006-14"],
-     "rationale": "구글(AP2 위임장 규격)과 아마존(Alexa 자동구매·정기 재구매)이 구매 위임의 형식과 첫 웨지(소모품 재주문)를 플랫폼 기본 기능으로 선점. LG 고유 우위는 '기기 상태 기반 수요 신호'로 좁아짐."},
-    {"date": "2026-10-06", "pf": "PF-04", "criterion": "differentiation", "from": 4.0, "to": 3.5,
-     "signals": ["SIG-20261006-27", "SIG-20261006-38"],
-     "rationale": "삼성이 TV에서 멀티 AI 에이전트 선택을 먼저 구현하고 SmartThings로 홈 AI 관문을 확장. 'TV가 AI 서비스 유통 관문'이라는 개념 자체는 업계 공통 전략이 됨. 차별화는 맥락 기반 라우팅으로만 남음."},
-    {"date": "2026-10-06", "pf": "PF-06", "criterion": "tam", "from": 4.5, "to": 5.0,
-     "signals": ["SIG-20261006-18", "SIG-20261006-20"],
-     "rationale": "골드만삭스가 2035년 휴머노이드 전망을 약 4.7배 상향, IFR 기준 전문 서비스 로봇이 24% 성장하고 청소·숙박 로봇이 성장을 견인. PF-06 초기 영역과 일치."},
-    {"date": "2026-10-06", "pf": "PF-06", "criterion": "execution", "from": 4.0, "to": 4.5,
-     "signals": ["SIG-20261006-21"],
-     "rationale": "CEO 직속 로봇사업센터 신설(사업개발·판매·운영 통합, 데이터 생성 조직 별도). 평가 당시 전제였던 단일 의사결정 구조가 공식화됨 (strength 3 단일 근거)."},
-    {"date": "2026-10-06", "pf": "PF-07", "criterion": "tam", "from": 4.0, "to": 4.5,
-     "signals": ["SIG-20261006-35", "SIG-20261006-36"],
-     "rationale": "국내 필지 절반이 30년 넘은 노후 저층주택(국토연), 미국 주택 평균 연령 44년·수리 연기 37%. 집 상태 진단→수리 연결의 잠재 수요 기반이 평가 당시 가정보다 넓음."},
-    {"date": "2026-10-06", "pf": "PF-08", "criterion": "tam", "from": 2.0, "to": 2.5,
-     "signals": ["SIG-20261006-01", "SIG-20261006-02"],
-     "rationale": "통합돌봄 전국 시행으로 재가 돌봄 대상이 제도화되고, 70세 이상이 1인가구 최대 집단. 대상 모수와 공공 시장이 동시에 확인됨."},
-    {"date": "2026-10-06", "pf": "PF-08", "criterion": "monetize", "from": 2.0, "to": 2.5,
-     "signals": ["SIG-20261006-40", "SIG-20261006-41"],
-     "rationale": "일본은 지켜보기 센서를 공공이 최대 3/4 보조, 국내는 수백 개 지자체가 돌봄 기기를 이미 구매. B2C 과금 저항을 B2G 지불 구조로 우회할 경로가 실재."},
-    {"date": "2026-10-06", "pf": "PF-09", "criterion": "execution", "from": 2.5, "to": 3.0,
-     "signals": ["SIG-20261006-44", "SIG-20261006-42"],
-     "rationale": "LG가 정부 협약·그룹 물류사로 폐가전 회수와 리퍼 판매(소상공인)를 시작해 최대 장벽이던 역물류의 첫 해법을 확보. EU 수리권 지침도 수리·재사용 경로를 제도화."}
+    {
+      "date": "2026-10-06",
+      "pf": "PF-01",
+      "criterion": "rtw",
+      "from": 4.5,
+      "to": 4.0,
+      "signals": [
+        "SIG-20261006-13",
+        "SIG-20261006-14"
+      ],
+      "rationale": "구글(AP2 위임장 규격)과 아마존(Alexa 자동구매·정기 재구매)이 구매 위임의 형식과 첫 웨지(소모품 재주문)를 플랫폼 기본 기능으로 선점. LG 고유 우위는 '기기 상태 기반 수요 신호'로 좁아짐."
+    },
+    {
+      "date": "2026-10-06",
+      "pf": "PF-04",
+      "criterion": "differentiation",
+      "from": 4.0,
+      "to": 3.5,
+      "signals": [
+        "SIG-20261006-27",
+        "SIG-20261006-38"
+      ],
+      "rationale": "삼성이 TV에서 멀티 AI 에이전트 선택을 먼저 구현하고 SmartThings로 홈 AI 관문을 확장. 'TV가 AI 서비스 유통 관문'이라는 개념 자체는 업계 공통 전략이 됨. 차별화는 맥락 기반 라우팅으로만 남음."
+    },
+    {
+      "date": "2026-10-06",
+      "pf": "PF-06",
+      "criterion": "tam",
+      "from": 4.5,
+      "to": 5.0,
+      "signals": [
+        "SIG-20261006-18",
+        "SIG-20261006-20"
+      ],
+      "rationale": "골드만삭스가 2035년 휴머노이드 전망을 약 4.7배 상향, IFR 기준 전문 서비스 로봇이 24% 성장하고 청소·숙박 로봇이 성장을 견인. PF-06 초기 영역과 일치."
+    },
+    {
+      "date": "2026-10-06",
+      "pf": "PF-06",
+      "criterion": "execution",
+      "from": 4.0,
+      "to": 4.5,
+      "signals": [
+        "SIG-20261006-21"
+      ],
+      "rationale": "CEO 직속 로봇사업센터 신설(사업개발·판매·운영 통합, 데이터 생성 조직 별도). 평가 당시 전제였던 단일 의사결정 구조가 공식화됨 (strength 3 단일 근거)."
+    },
+    {
+      "date": "2026-10-06",
+      "pf": "PF-07",
+      "criterion": "tam",
+      "from": 4.0,
+      "to": 4.5,
+      "signals": [
+        "SIG-20261006-35",
+        "SIG-20261006-36"
+      ],
+      "rationale": "국내 필지 절반이 30년 넘은 노후 저층주택(국토연), 미국 주택 평균 연령 44년·수리 연기 37%. 집 상태 진단→수리 연결의 잠재 수요 기반이 평가 당시 가정보다 넓음."
+    },
+    {
+      "date": "2026-10-06",
+      "pf": "PF-08",
+      "criterion": "tam",
+      "from": 2.0,
+      "to": 2.5,
+      "signals": [
+        "SIG-20261006-01",
+        "SIG-20261006-02"
+      ],
+      "rationale": "통합돌봄 전국 시행으로 재가 돌봄 대상이 제도화되고, 70세 이상이 1인가구 최대 집단. 대상 모수와 공공 시장이 동시에 확인됨."
+    },
+    {
+      "date": "2026-10-06",
+      "pf": "PF-08",
+      "criterion": "monetize",
+      "from": 2.0,
+      "to": 2.5,
+      "signals": [
+        "SIG-20261006-40",
+        "SIG-20261006-41"
+      ],
+      "rationale": "일본은 지켜보기 센서를 공공이 최대 3/4 보조, 국내는 수백 개 지자체가 돌봄 기기를 이미 구매. B2C 과금 저항을 B2G 지불 구조로 우회할 경로가 실재."
+    },
+    {
+      "date": "2026-10-06",
+      "pf": "PF-09",
+      "criterion": "execution",
+      "from": 2.5,
+      "to": 3.0,
+      "signals": [
+        "SIG-20261006-44",
+        "SIG-20261006-42"
+      ],
+      "rationale": "LG가 정부 협약·그룹 물류사로 폐가전 회수와 리퍼 판매(소상공인)를 시작해 최대 장벽이던 역물류의 첫 해법을 확보. EU 수리권 지침도 수리·재사용 경로를 제도화."
+    }
   ],
   "watch": [
-    {"since": "2026-10-06", "pf": "PF-02", "criterion": "rtw", "direction": "-",
-     "signals": ["SIG-20261006-16"], "counter": ["SIG-20261006-15", "SIG-20261006-17"],
-     "note": "범용 로봇 모델이 가전을 시각·물리 조작만으로 다루게 되면 환경 측 런타임의 필요성이 줄어듦. 반대로 두뇌가 범용화될수록 기기 측 안전·검증 계약 가치가 오른다는 근거도 있어 보류."},
-    {"since": "2026-10-06", "pf": "PF-03", "criterion": "rtw", "direction": "-",
-     "signals": ["SIG-20261006-23", "SIG-20261006-24"], "counter": ["SIG-20261006-05", "SIG-20261006-25"],
-     "note": "JCI의 에이전틱 빌딩 OS, Eaton·Vertiv·Daikin의 열관리·현장서비스 M&A로 경쟁사가 운영 계층을 먼저 채우는 중. LG의 데이터센터 냉각 수주 확대가 반대 근거. 운영(Uptime) 계약 신호가 나오면 재판단."},
-    {"since": "2026-10-06", "pf": "PF-04", "criterion": "rtw", "direction": "-",
-     "signals": ["SIG-20261006-29"], "counter": ["SIG-20261006-07", "SIG-20261006-25"],
-     "note": "북미 TV OS의 리테일러 점유율이 2029년 47%로 확대 전망. 글로벌 webOS 설치 기반 우위는 유지되므로 지역별 점유율 데이터 확보 후 판단."},
-    {"since": "2026-10-06", "pf": "PF-05", "criterion": "rtw", "direction": "-",
-     "signals": ["SIG-20261006-31", "SIG-20261006-03"], "counter": ["SIG-20261006-34"],
-     "note": "중립 애그리게이터(Kraken 2GW+)와 국내 건설사 단지 플랫폼이 부하 제어 권한을 먼저 확보. LG Homey의 유럽 기반이 반대 근거. Homey의 에너지 기능 실적 확인 후 판단. 독점우위가 3.5로 내려가면 X축이 8 미만이 되어 Strategic Core에서 이탈."}
+    {
+      "since": "2026-10-06",
+      "pf": "PF-02",
+      "criterion": "rtw",
+      "direction": "-",
+      "signals": [
+        "SIG-20261006-16",
+        "SIG-20261006-47"
+      ],
+      "counter": [
+        "SIG-20261006-15",
+        "SIG-20261006-17"
+      ],
+      "note": "범용 로봇 모델이 가전을 시각·물리 조작만으로 다루게 되면 환경 측 런타임의 필요성이 줄어듦. 반대로 두뇌가 범용화될수록 기기 측 안전·검증 계약 가치가 오른다는 근거도 있어 보류."
+    },
+    {
+      "since": "2026-10-06",
+      "pf": "PF-03",
+      "criterion": "rtw",
+      "direction": "-",
+      "signals": [
+        "SIG-20261006-23",
+        "SIG-20261006-24"
+      ],
+      "counter": [
+        "SIG-20261006-05",
+        "SIG-20261006-25"
+      ],
+      "note": "JCI의 에이전틱 빌딩 OS, Eaton·Vertiv·Daikin의 열관리·현장서비스 M&A로 경쟁사가 운영 계층을 먼저 채우는 중. LG의 데이터센터 냉각 수주 확대가 반대 근거. 운영(Uptime) 계약 신호가 나오면 재판단."
+    },
+    {
+      "since": "2026-10-06",
+      "pf": "PF-04",
+      "criterion": "rtw",
+      "direction": "-",
+      "signals": [
+        "SIG-20261006-29"
+      ],
+      "counter": [
+        "SIG-20261006-07",
+        "SIG-20261006-25"
+      ],
+      "note": "북미 TV OS의 리테일러 점유율이 2029년 47%로 확대 전망. 글로벌 webOS 설치 기반 우위는 유지되므로 지역별 점유율 데이터 확보 후 판단."
+    },
+    {
+      "since": "2026-10-06",
+      "pf": "PF-05",
+      "criterion": "rtw",
+      "direction": "-",
+      "signals": [
+        "SIG-20261006-31",
+        "SIG-20261006-03"
+      ],
+      "counter": [
+        "SIG-20261006-34",
+        "SIG-20261006-46"
+      ],
+      "note": "중립 애그리게이터(Kraken 2GW+)와 국내 건설사 단지 플랫폼이 부하 제어 권한을 먼저 확보. LG Homey의 유럽 기반이 반대 근거. Homey의 에너지 기능 실적 확인 후 판단. 독점우위가 3.5로 내려가면 X축이 8 미만이 되어 Strategic Core에서 이탈."
+    }
   ]
 }
