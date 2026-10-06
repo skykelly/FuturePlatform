@@ -283,7 +283,7 @@ def main():
         n_ib = sum(1 for s in signals if s["tier"] in ("컨설팅", "투자은행"))
         snap = (f"> 기준일 {date.today().isoformat()} · 반영 자료 {len(signals)}건 (컨설팅·투자은행 {n_ib}건) · "
                 f"9월 대비 점수 조정 {len(scores['history'])}건 · 관찰 항목 {len(scores['watch'])}건 · "
-                f"의사결정 요청 {len(open_d)}건")
+                f"의사결정 대기 {len(open_d)}건 · 결정 완료 {sum(1 for d in decisions if d.get('status') == 'closed')}건")
         text = replace_block(text, "SNAPSHOT", snap) or text
 
         # CHANGES
@@ -312,7 +312,11 @@ def main():
         text = replace_block(text, "CHANGES", "\n".join(ch)) or text
 
         # DECISIONS
-        dl = ["| 번호 | 결정 사항 | 관련 기회 | 시점 |", "|---|---|---|---|"]
+        closed_d = [d for d in decisions if d.get("status") == "closed"]
+        if open_d:
+            dl = ["| 번호 | 결정 사항 | 관련 기회 | 시점 |", "|---|---|---|---|"]
+        else:
+            dl = ["현재 결정 대기 사항은 없습니다."]
         for d in open_d:
             dl.append(f"| {d['id']} | {d['question']} | {' '.join('[['+p+']]' for p in d['pf'])} | {d['due']} |")
         for d in open_d:
@@ -323,6 +327,12 @@ def main():
             dl += [f"- {o}" for o in d.get("watch_signals", [])]
             dl += ["", f"**관련 근거** {' '.join('[['+s+']]' for s in d.get('evidence', []))}  ",
                    f"**결정 주체** {d['owner']}  ", f"**시점** {d['due']}"]
+        if closed_d:
+            dl += ["", "### 결정 완료 사항", "",
+                   "| 번호 | 결정 사항 | 결정 내용 | 관련 기회 | 결정일 |", "|---|---|---|---|---|"]
+            for d in sorted(closed_d, key=lambda x: x["id"]):
+                dl.append(f"| {d['id']} | {d['question']} | {d.get('decision', '')} | "
+                          f"{' '.join('[['+p+']]' for p in d['pf'])} | {d.get('decided', '')} |")
         text = replace_block(text, "DECISIONS", "\n".join(dl)) or text
 
         # LATEST
@@ -391,6 +401,11 @@ def main():
             errors.append(f"{p.name}: AUTO:INDICATORS 블록 없음")
         elif r != text:
             p.write_text(r, encoding="utf-8")
+
+    # appendix sub-documents of the overview (for portal reader)
+    for p in sorted((ROOT / "wiki").glob("Appendix-*.md")):
+        meta, _, text = read_note(p)
+        wiki_md[meta.get("id", p.stem)] = text
 
     # index notes (for portal reader)
     for p in sorted((ROOT / "indices").glob("*.md")):

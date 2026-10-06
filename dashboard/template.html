@@ -200,13 +200,18 @@ const TIERS = ["컨설팅","투자은행","산업리서치","정부·공공","�
 const f1 = x => Number(x).toFixed(1);
 const dlt = d => Math.abs(d)<1e-9 ? '<span class="d-0">±0.0</span>' : (d>0?`<span class="d-up">+${f1(d)}</span>`:`<span class="d-dn">−${f1(-d)}</span>`);
 const PF_IDS = DATA ? Object.keys(DATA.thesis).sort() : [];
+const APPX = DATA ? Object.keys(DATA.wiki).filter(k=>k.startsWith("Appendix-")).sort().map(k=>[k,(DATA.wiki[k].match(/^# (.+)$/m)||[,k])[1]]) : [];
 const IDX_SLUG = DATA ? Object.fromEntries(DATA.indices.map((n,i)=>[n,"idx-"+i])) : {};
 const SLUG_IDX = Object.fromEntries(Object.entries(IDX_SLUG).map(([k,v])=>[v,k]));
 
 function md(src){
   let s = src.replace(/^---\n[\s\S]*?\n---\n?/, "").replace(/<!-- \/?AUTO:[A-Z]+ -->/g, "");
   s = s.replace(/\[\[([^\]]+)\]\]/g, (m, k) => {
+    let label = null;
+    const pi = k.search(/\\?\|/);
+    if (pi >= 0) { label = k.slice(pi).replace(/^\\?\|/, "").trim(); k = k.slice(0, pi); }
     k = k.trim();
+    if (label && !k.startsWith("SIG-")) return `<a class="wl" href="${k==="Portfolio"?"#overview":"#wiki-"+esc(k)}">${esc(label)}</a>`;
     if (k.startsWith("SIG-")) return `<a class="wl" href="#signals" data-sig="${esc(k)}">${esc(k.replace("SIG-",""))}</a>`;
     if (IDX_SLUG[k]) return `<a class="wl" href="#wiki-${IDX_SLUG[k]}">${esc(k)}</a>`;
     if (k === "Portfolio") return `<a class="wl" href="#overview">개요</a>`;
@@ -281,7 +286,8 @@ function overview(target){
     v.innerHTML=`<div class="wiki ov"><nav class="toc" id="ov-toc" aria-label="장 목차"></nav><article class="doc ovdoc" id="ov-doc">${md(src)}</article></div>`;
     const hs=[...v.querySelectorAll(".ovdoc h2")];
     hs.forEach((h,i)=>h.id="ch-"+(i+1));
-    $("ov-toc").innerHTML=`<div class="grp">목차</div>`+hs.map((h,i)=>`<a href="#ch-${i+1}" data-ch="ch-${i+1}">${esc(h.textContent)}</a>`).join("")+
+    $("ov-toc").innerHTML=`<div class="grp">목차</div>`+hs.map((h,i)=>h.textContent.trim()==="부록"&&APPX.length?"":`<a href="#ch-${i+1}" data-ch="ch-${i+1}">${esc(h.textContent)}</a>`).join("")+
+      `<div class="grp">부록</div>${APPX.map(([k,n])=>`<a href="#wiki-${k}">${esc(n)}</a>`).join("")}`+
       `<div class="grp">더 보기</div><a href="#wiki-PF-01">Thesis 위키</a><a href="#signals">신호 레이더 · ${DATA.signals.length}건</a><a href="#digest">다이제스트</a>`;
     v.dataset.ready="1";
   }
@@ -331,6 +337,7 @@ function wikiView(page){
   const toc = `<nav class="toc" aria-label="위키 목차">
     <div class="grp">Thesis</div>${PF_IDS.map(p=>`<a href="#wiki-${p}" ${page===p?'aria-current="page"':""}><span>${p}</span>${esc(DATA.thesis[p].name)}</a>`).join("")}
     <div class="grp">수요층 지수</div>${DATA.indices.map(n=>`<a href="#wiki-${IDX_SLUG[n]}" ${page===IDX_SLUG[n]?'aria-current="page"':""}><span>IDX</span>${esc(n)}</a>`).join("")}
+    ${APPX.length?`<div class="grp">개요 부록</div>`+APPX.map(([k,n])=>`<a href="#wiki-${k}" ${page===k?'aria-current="page"':""}><span>APX</span>${esc(n.replace(/^부록 [A-Z]\. /,""))}</a>`).join(""):""}
   </nav>`;
   let head="";
   if(DATA.thesis[key]){
