@@ -281,9 +281,9 @@ def main():
         text = port.read_text(encoding="utf-8")
         open_d = [d for d in decisions if d.get("status") == "open"]
         n_ib = sum(1 for s in signals if s["tier"] in ("컨설팅", "투자은행"))
-        snap = (f"> **현재 상태** · {date.today().isoformat()} 갱신 · 신호 {len(signals)}건 (컨설팅·투자은행 {n_ib}건) · "
-                f"9월 평가 이후 점수 변경 {len(scores['history'])}건 · 관찰 중 {len(scores['watch'])}건 · "
-                f"결정이 필요한 질문 {len(open_d)}건")
+        snap = (f"> 기준일 {date.today().isoformat()} · 반영 자료 {len(signals)}건 (컨설팅·투자은행 {n_ib}건) · "
+                f"9월 대비 점수 조정 {len(scores['history'])}건 · 관찰 항목 {len(scores['watch'])}건 · "
+                f"의사결정 요청 {len(open_d)}건")
         text = replace_block(text, "SNAPSHOT", snap) or text
 
         # CHANGES
@@ -294,35 +294,35 @@ def main():
                  if calc[pf]["current"]["total"] < calc[pf]["baseline"]["total"]]
         qmoves = [f"{pf} {calc[pf]['baseline']['quadrant']} → {calc[pf]['current']['quadrant']}" for pf in sorted(calc)
                   if calc[pf]["baseline"]["quadrant"] != calc[pf]["current"]["quadrant"]]
-        ch = [f"- **점수가 오른 Thesis**: {', '.join(ups) or '없음'}",
-              f"- **점수가 내려간 Thesis**: {', '.join(downs) or '없음'}",
-              f"- **사분면 이동**: {', '.join(qmoves) or '없음 — 9개 모두 9월 위치 유지'}",
-              "", "**점수 변경 내역**", "",
-              "| Thesis | 기준 | 9월 → 현재 | 왜 바뀌었나 | 근거 |", "|---|---|:-:|---|---|"]
+        ch = [f"- 점수 상승: {', '.join(ups) or '없음'}",
+              f"- 점수 하락: {', '.join(downs) or '없음'}",
+              f"- 사분면 이동: {', '.join(qmoves) or '없음 (9개 모두 9월 그룹 유지)'}",
+              "", "**점수 조정 내역**", "",
+              "| 기회 | 기준 | 9월 → 현재 | 조정 사유 | 근거 |", "|---|---|:-:|---|---|"]
         for h in sorted(scores["history"], key=lambda h: (h["date"], h["pf"]), reverse=True):
             refs = " ".join(f"[[{s}]]" for s in h["signals"])
             ch.append(f"| [[{h['pf']}]] {thesis[h['pf']]['name']} | {crit_label[h['criterion']]} | "
                       f"{fmt(h['from'])}→**{fmt(h['to'])}** | {h['rationale']} | {refs} |")
         if scores["watch"]:
-            ch += ["", "**관찰 중 — 근거가 엇갈려 아직 점수를 바꾸지 않은 항목**", "",
-                   "| Thesis | 기준 | 방향 | 무엇을 보고 있나 |", "|---|---|:-:|---|"]
+            ch += ["", "**관찰 항목** (근거가 상충해 점수를 유지하고 추이를 확인 중)", "",
+                   "| 기회 | 기준 | 우려 방향 | 확인 내용 |", "|---|---|:-:|---|"]
             for w in scores["watch"]:
                 ch.append(f"| [[{w['pf']}]] {thesis[w['pf']]['name']} | {crit_label[w['criterion']]} | "
                           f"{DIR_LABEL[w['direction']]} | {w['note']} |")
         text = replace_block(text, "CHANGES", "\n".join(ch)) or text
 
         # DECISIONS
-        dl = ["| # | 질문 | 관련 Thesis | 결정 시점 |", "|---|---|---|---|"]
+        dl = ["| 번호 | 결정 사항 | 관련 기회 | 시점 |", "|---|---|---|---|"]
         for d in open_d:
             dl.append(f"| {d['id']} | {d['question']} | {' '.join('[['+p+']]' for p in d['pf'])} | {d['due']} |")
         for d in open_d:
             dl += ["", f"### {d['id']} · {d['question']}", "",
-                   f"**왜 중요한가.** {d['why']}", "", "**선택지**", ""]
+                   f"**배경** {d['why']}", "", "**선택안**", ""]
             dl += [f"- {o}" for o in d.get("options", [])]
-            dl += ["", "**답을 바꿀 신호**", ""]
+            dl += ["", "**판단 지표**", ""]
             dl += [f"- {o}" for o in d.get("watch_signals", [])]
-            dl += ["", f"**지금까지의 근거** {' '.join('[['+s+']]' for s in d.get('evidence', []))}  ",
-                   f"**결정 주체** {d['owner']} · **시점** {d['due']}"]
+            dl += ["", f"**관련 근거** {' '.join('[['+s+']]' for s in d.get('evidence', []))}  ",
+                   f"**결정 주체** {d['owner']}  ", f"**시점** {d['due']}"]
         text = replace_block(text, "DECISIONS", "\n".join(dl)) or text
 
         # LATEST
@@ -331,10 +331,10 @@ def main():
             m = re.search(r"## 이번 회차 핵심 3가지\n(.*?)(?=\n## |\Z)", dg["markdown"], re.S)
             tm = re.search(r"^# (.+)$", dg["markdown"], re.M)
             lt = [f"**{tm.group(1) if tm else dg['date']}**", "", (m.group(1).strip() if m else ""), "",
-                  f"전문은 다이제스트 탭(`{dg['path']}`)에서 볼 수 있다."]
+                  f"상세 내용은 다이제스트 탭에 있습니다."]
             text = replace_block(text, "LATEST", "\n".join(lt)) or text
         port.write_text(text, encoding="utf-8")
-        rows = ["| PF | Thesis | 총점 | 변화 | 사분면 | X | Y | 신호 (강화/약화) | 확신도 |",
+        rows = ["| 번호 | 기회 | 총점 | 9월 대비 | 그룹 | 가로축 | 세로축 | 근거 (긍정/부정) | 추세 |",
                 "|---|---|:-:|:-:|---|:-:|:-:|:-:|:-:|"]
         order = sorted(calc, key=lambda k: -calc[k]["current"]["total"])
         for pf in order:

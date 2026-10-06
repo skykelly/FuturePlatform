@@ -221,9 +221,9 @@ function md(src){
   return html;
 }
 function stacksHTML(){
-  const rows=[["Physical AI","로봇과 공간의 실행 계층",["PF-02","PF-03","PF-06"],"→"],
-              ["Household","집과 생활의 의사결정 계층",["PF-07","PF-01","PF-08","PF-09"],"→"],
-              ["Distribution & Infra","접근 경로와 자원 계층",["PF-04","PF-05"],"·"]];
+  const rows=[["Physical AI","로봇과 공간의 운영",["PF-02","PF-03","PF-06"],"→"],
+              ["Household","가정 내 의사결정",["PF-07","PF-01","PF-08","PF-09"],"→"],
+              ["Distribution & Infra","유통 경로와 자원",["PF-04","PF-05"],"·"]];
   return `<div class="stacks viz">${rows.map(([n,sub,ids,sep])=>`<div class="srow"><div class="slab"><b>${esc(n)}</b><span>${esc(sub)}</span></div><div class="snodes">${ids.map((id,i)=>{
     const t=DATA.thesis[id], k=t.calc.current;
     return `${i?`<span class="sep" aria-hidden="true">${sep}</span>`:""}<a class="snode" href="#wiki-${id}" style="--qc:${QC[k.quadrant]}"><span class="pfid">${id}</span><b>${esc(t.name)}</b><small>${esc(t.name_ko)} · ${f1(k.total)}점</small></a>`;}).join("")}</div></div>`).join("")}</div>`;
@@ -281,8 +281,8 @@ function overview(target){
     v.innerHTML=`<div class="wiki ov"><nav class="toc" id="ov-toc" aria-label="장 목차"></nav><article class="doc ovdoc" id="ov-doc">${md(src)}</article></div>`;
     const hs=[...v.querySelectorAll(".ovdoc h2")];
     hs.forEach((h,i)=>h.id="ch-"+(i+1));
-    $("ov-toc").innerHTML=`<div class="grp">개요 · 목차</div>`+hs.map((h,i)=>`<a href="#ch-${i+1}" data-ch="ch-${i+1}">${esc(h.textContent)}</a>`).join("")+
-      `<div class="grp">더 보기</div><a href="#wiki-PF-01">Thesis 위키 9개</a><a href="#signals">신호 레이더 · ${DATA.signals.length}건</a><a href="#digest">다이제스트</a>`;
+    $("ov-toc").innerHTML=`<div class="grp">목차</div>`+hs.map((h,i)=>`<a href="#ch-${i+1}" data-ch="ch-${i+1}">${esc(h.textContent)}</a>`).join("")+
+      `<div class="grp">더 보기</div><a href="#wiki-PF-01">Thesis 위키</a><a href="#signals">신호 레이더 · ${DATA.signals.length}건</a><a href="#digest">다이제스트</a>`;
     v.dataset.ready="1";
   }
   document.querySelectorAll("#ov-toc a[data-ch]").forEach(a=>a.setAttribute("aria-current", a.dataset.ch===target?"page":"false"));
@@ -329,7 +329,6 @@ function wikiView(page){
   const key = SLUG_IDX[page] || page;
   const src = DATA.wiki[key];
   const toc = `<nav class="toc" aria-label="위키 목차">
-    <div class="grp">개요</div><a href="#overview"><span>ALL</span>개요로 돌아가기</a>
     <div class="grp">Thesis</div>${PF_IDS.map(p=>`<a href="#wiki-${p}" ${page===p?'aria-current="page"':""}><span>${p}</span>${esc(DATA.thesis[p].name)}</a>`).join("")}
     <div class="grp">수요층 지수</div>${DATA.indices.map(n=>`<a href="#wiki-${IDX_SLUG[n]}" ${page===IDX_SLUG[n]?'aria-current="page"':""}><span>IDX</span>${esc(n)}</a>`).join("")}
   </nav>`;
