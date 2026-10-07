@@ -167,7 +167,7 @@ def main():
             "source": meta.get("source", ""), "url": url, "type": meta.get("type", ""),
             "tier": meta.get("tier", ""), "direction": str(meta.get("direction")),
             "strength": meta.get("strength"), "pf": pf, "index": idx, "criteria": crit,
-            "japan": bool(meta.get("japan", False)), "status": meta.get("status", "accepted"),
+            "japan": bool(meta.get("japan", False)), "status": meta.get("status", "accepted"), "origin": meta.get("origin", ""),
             "summary": section(body, "요지"), "path": str(p.relative_to(ROOT)),
         })
     sig_by_id = {s["id"]: s for s in signals}

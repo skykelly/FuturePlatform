@@ -14,6 +14,7 @@ index: [지수명]
 criteria: [tam, value, rtw, network, moat, monetize, execution, differentiation 중 해당]
 japan: false
 status: accepted | review
+origin: 사용자 제안
 ---
 
 ## 요지
